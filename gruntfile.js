@@ -127,7 +127,7 @@ module.exports = function(grunt) {
         noSandbox: true,
       },
       dev: {
-        src: ['./dist/dx-excelj-fork.js'],
+        src: ['./dist/dx-exceljs-fork.js'],
         options: {
           specs: './build/web/exceljs.spec.js',
         },
