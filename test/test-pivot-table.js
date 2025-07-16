@@ -7,7 +7,7 @@
 /* eslint-disable */
 
 function main(filepath) {
-  const Excel = require('../lib/exceljs.nodejs.js');
+  const Excel = require('../lib/dx-exceljs-fork.nodejs.js');
 
   const workbook = new Excel.Workbook();
 

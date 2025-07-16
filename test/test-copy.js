@@ -1,6 +1,6 @@
 const HrStopwatch = require('./utils/hr-stopwatch');
 
-const {Workbook} = require('../lib/exceljs.nodejs');
+const {Workbook} = require('../lib/dx-exceljs-fork.nodejs');
 
 const filenameIn = process.argv[2];
 const filenameOut = process.argv[3];

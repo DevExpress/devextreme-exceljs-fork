@@ -5,15 +5,15 @@
 const fs = require('fs');
 const express = require('express');
 const path = require('path');
-const ExcelJS = require('../../lib/exceljs.nodejs.js');
+const ExcelJS = require('../../lib/dx-exceljs-fork.nodejs.js');
 const StreamBuf = require('../../lib/utils/stream-buf');
 
 console.log('Copying bundle.js to public folder');
-fs.createReadStream(`${__dirname}/../../dist/exceljs.min.js`).pipe(
-  fs.createWriteStream(`${__dirname}/public/exceljs.min.js`)
+fs.createReadStream(`${__dirname}/../../dist/dx-exceljs-fork.min.js`).pipe(
+  fs.createWriteStream(`${__dirname}/public/dx-exceljs-fork.min.js`)
 );
-fs.createReadStream(`${__dirname}/../../dist/exceljs.js`).pipe(
-  fs.createWriteStream(`${__dirname}/public/exceljs.js`)
+fs.createReadStream(`${__dirname}/../../dist/dx-exceljs-fork.js`).pipe(
+  fs.createWriteStream(`${__dirname}/public/dx-exceljs-fork.js`)
 );
 
 const app = express();

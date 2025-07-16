@@ -7,17 +7,17 @@ describe('ExcelJS', () => {
     it('should include LICENSE', async () => {
       expect(await exists('./dist/LICENSE')).to.be.true()
     });
-    it('should include exceljs.js', async () => {
-      expect(await exists('./dist/exceljs.js')).to.be.true()
+    it('should include dx-exceljs-fork.js', async () => {
+      expect(await exists('./dist/dx-exceljs-fork.js')).to.be.true()
     });
-    it('should include exceljs.min.js', async () => {
-      expect(await exists('./dist/exceljs.min.js')).to.be.true()
+    it('should include dx-exceljs-fork.min.js', async () => {
+      expect(await exists('./dist/dx-exceljs-fork.min.js')).to.be.true()
     });
-    it('should include exceljs.bare.js', async () => {
-      expect(await exists('./dist/exceljs.bare.js')).to.be.true()
+    it('should include dx-exceljs-fork.bare.js', async () => {
+      expect(await exists('./dist/dx-exceljs-fork.bare.js')).to.be.true()
     });
-    it('should include exceljs.bare.min.js', async () => {
-      expect(await exists('./dist/exceljs.bare.min.js')).to.be.true()
+    it('should include dx-exceljs-fork.bare.min.js', async () => {
+      expect(await exists('./dist/dx-exceljs-fork.bare.min.js')).to.be.true()
     });
     it('should include es5/index', async () => {
       expect(await exists('./dist/es5/index.js')).to.be.true()
