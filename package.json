@@ -1,27 +1,24 @@
 {
-  "name": "exceljs",
+  "name": "devextreme-exceljs-fork",
   "version": "4.4.0",
-  "description": "Excel Workbook Manager - Read and Write xlsx and csv Files.",
+  "description": "Fork of Excel Workbook Manager - Read and Write xlsx and csv Files.",
   "private": false,
   "license": "MIT",
-  "author": {
-    "name": "Guyon Roche",
-    "email": "guyon@live.com"
-  },
+  "author": "Developer Express Inc.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/exceljs/exceljs.git"
+    "url": "https://github.com/DevExpress/devextreme-exceljs-fork.git"
   },
   "engines": {
     "node": ">=8.3.0"
   },
-  "main": "./excel.js",
-  "browser": "./dist/exceljs.min.js",
+  "main": "./dx-excel-fork.js",
+  "browser": "./dist/dx-exceljs.min.js",
   "types": "./index.d.ts",
   "files": [
     "dist",
     "lib",
-    "excel.js",
+    "dx-excel-fork.js",
     "LICENSE",
     "README.md",
     "README_zh.md",
@@ -107,7 +104,6 @@
     "uuid": "^8.3.0"
   },
   "devDependencies": {
-    "puppeteer": "^24.11.2",
     "@babel/cli": "^7.10.5",
     "@babel/core": "^7.11.4",
     "@babel/preset-env": "^7.11.0",
@@ -142,6 +138,7 @@
     "mocha": "^7.2.0",
     "prettier-eslint": "^11.0.0",
     "prettier-eslint-cli": "^5.0.0",
+    "puppeteer": "^24.11.2",
     "regenerator-runtime": "^0.13.7",
     "sax": "^1.2.4",
     "ts-node": "^8.10.2",
