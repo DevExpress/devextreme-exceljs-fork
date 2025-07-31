@@ -1,5 +1,17 @@
 'use strict';
 
+const pkg = require('./package.json');
+
+/* eslint-disable max-len */
+const preamble = `/*!
+ * DevExtreme-ExcelJS Fork v.${pkg.version}
+ * https://js.devexpress.com/
+ * Copyright (c) 2025, Developer Express Inc.
+ * Copyright (c) 2014-2019 Guyon Roche
+ * Read about DevExtreme-ExcelJS Fork licensing here: https://cdn.jsdelivr.net/npm/devextreme-exceljs-fork/LICENSE
+ */`;
+/* eslint-enable max-len */
+
 module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-babel');
   grunt.loadNpmTasks('grunt-browserify');
@@ -26,6 +38,7 @@ module.exports = function(grunt) {
     },
     browserify: {
       options: {
+        banner: preamble,
         transform: [
           [
             'babelify',
@@ -68,7 +81,6 @@ module.exports = function(grunt) {
     terser: {
       options: {
         output: {
-          preamble: '/*! ExcelJS <%= grunt.template.today("dd-mm-yyyy") %> */\n',
           ascii_only: true,
         },
       },
