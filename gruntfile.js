@@ -8,7 +8,7 @@ const preamble = `/*!
  * https://js.devexpress.com/
  * Copyright (c) 2025, Developer Express Inc.
  * Copyright (c) 2014-2019 Guyon Roche
- * Read about DevExtreme-ExcelJS Fork licensing here: https://cdn.jsdelivr.net/npm/devextreme-exceljs-fork/LICENSE
+ * Read about DevExtreme-ExcelJS Fork licensing here: https://cdn.jsdelivr.net/npm/devextreme-exceljs-fork@${pkg.version}/LICENSE
  */`;
 /* eslint-enable max-len */
 
