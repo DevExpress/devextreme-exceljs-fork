@@ -1,4 +1,4 @@
-# ExcelJS
+# DevExtreme ExcelJS
 
 [![Build Status](https://github.com/exceljs/exceljs/actions/workflows/tests.yml/badge.svg?branch=master&event=push)](https://github.com/exceljs/exceljs/actions/workflows/tests.yml)
 
@@ -13,7 +13,7 @@ Reverse engineered from Excel spreadsheet files as a project.
 # Installation
 
 ```shell
-npm install exceljs
+npm install devextreme-exceljs-fork
 ```
 
 # New Features!
