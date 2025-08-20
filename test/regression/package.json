@@ -17,8 +17,8 @@
     "exceljs": "^3.3.0"
   },
   "devDependencies": {
-    "jshint": "*",
-    "lodash": "*"
+    "jshint": "~2.13.6",
+    "lodash": "~4.17.21"
   },
   "scripts": {
   }
