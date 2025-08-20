@@ -132,7 +132,7 @@
     "grunt-contrib-jasmine": "^2.2.0",
     "grunt-contrib-watch": "^1.1.0",
     "grunt-exorcise": "^2.1.1",
-    "grunt-terser": "^1.0.0",
+    "grunt-terser": "^2.0.0",
     "husky": "^4.3.0",
     "lint-staged": "^10.2.13",
     "mocha": "^7.2.0",
@@ -143,5 +143,10 @@
     "sax": "^1.2.4",
     "ts-node": "^8.10.2",
     "typescript": "^3.9.7"
+  },
+  "overrides": {
+    "grunt-exorcise": {
+      "exorcist": "^2.0.0"
+    }
   }
 }
