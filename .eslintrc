@@ -50,7 +50,7 @@
     "node/no-missing-require": ["warn"],
     "prefer-arrow-callback": ["warn"],
     "radix": ["warn"],
-    "arrow-body-style": ["warn"],
+    "arrow-body-style": ["off"],
     "grouped-accessor-pairs": ["warn"],
     "no-promise-executor-return": ["warn"]
   }
