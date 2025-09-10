@@ -34,6 +34,4 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          npm dist-tag add exceljs@${{ inputs.version }} 24_1
-          npm dist-tag add exceljs@${{ inputs.version }} 24_2
           npm dist-tag add exceljs@${{ inputs.version }} 25_1
