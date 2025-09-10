@@ -87,7 +87,6 @@ jobs:
           restore-keys: |
             v1-npm-
       - run: npm ci --cache ./npm-cache
-      - run: npm ci typescript
-      - run: tsc index.d.ts
+      - run: npm run type-check
         env:
           CI: true
