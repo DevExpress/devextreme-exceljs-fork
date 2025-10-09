@@ -13,7 +13,7 @@
     "node": ">=16.20.2"
   },
   "main": "./dx-excel-fork.js",
-  "browser": "./dist/dx-exceljs.min.js",
+  "browser": "./dist/dx-exceljs-fork.min.js",
   "types": "./index.d.ts",
   "files": [
     "dist",
