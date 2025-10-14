@@ -17,8 +17,37 @@ jobs:
         with:
           ref: ${{ inputs.version }}
 
-      - name: Build
-        uses: ./.github/actions/build
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Clean previous build
+        run: npm run clean
+
+      - name: Build package
+        run: npm run build
+
+      - name: Verify build artifacts
+        run: |
+          echo "Verifying build artifacts..."
+          if [ ! -d "dist" ]; then
+            echo "Error: dist directory not found"
+            exit 1
+          fi
+          if [ ! -f "dist/dx-exceljs-fork.min.js" ]; then
+            echo "Error: minified bundle not found"
+            exit 1
+          fi
+          if [ ! -f "dist/dx-exceljs-fork.js" ]; then
+            echo "Error: main bundle not found"
+            exit 1
+          fi
+          echo "All build artifacts verified successfully"
 
       - uses: actions/setup-node@v4
         with:
@@ -28,10 +57,4 @@ jobs:
       - name: Publish to NPM
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish --access=public
-
-      - name: Setup NPM tags
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          npm dist-tag add devextreme-exceljs-fork@${{ inputs.version }} 25_1
+        run: npm publish
