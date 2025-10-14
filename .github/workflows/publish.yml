@@ -12,13 +12,13 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout ExcelJS repository
+      - name: Checkout devextreme-exceljs-fork repository
         uses: actions/checkout@v4
         with:
           ref: ${{ inputs.version }}
 
       - name: Build
-        uses: ./.github/actions/exceljs/steps/build
+        uses: ./.github/actions/build
 
       - uses: actions/setup-node@v4
         with:
@@ -34,4 +34,4 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          npm dist-tag add exceljs@${{ inputs.version }} 25_1
+          npm dist-tag add devextreme-exceljs-fork@${{ inputs.version }} 25_1
