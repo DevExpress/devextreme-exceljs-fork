@@ -22,6 +22,7 @@ jobs:
         with:
           node-version: '18'
           cache: 'npm'
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
         run: npm ci
@@ -48,11 +49,6 @@ jobs:
             exit 1
           fi
           echo "All build artifacts verified successfully"
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-          registry-url: 'https://registry.npmjs.org'
 
       - name: Publish to NPM
         env:
