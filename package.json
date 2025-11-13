@@ -1,6 +1,6 @@
 {
   "name": "devextreme-exceljs-fork",
-  "version": "4.4.3",
+  "version": "4.4.4",
   "description": "Fork of Excel Workbook Manager - Read and Write xlsx and csv Files.",
   "private": false,
   "license": "MIT",
@@ -52,7 +52,7 @@
     "benchmark": "node --expose-gc benchmark",
     "benchmark:debug": "node --expose-gc --inspect-brk --trace-deopt benchmark",
     "build": "grunt build",
-    "install-build": "npm install && grunt build",
+    "install-build": "npm ci && grunt build",
     "preversion": "npm run clean && npm run build && npm run test:version",
     "postversion": "git push --no-verify && git push --tags --no-verify"
   },
@@ -110,7 +110,7 @@
     "@babel/preset-env": "^7.11.0",
     "@types/chai": "^4.2.12",
     "@types/mocha": "^8.0.3",
-    "@types/node": "^14.11.2",
+    "@types/node": "^18.19.0",
     "babelify": "^10.0.0",
     "browserify": "^16.5.2",
     "chai": "^4.3.7",
@@ -142,7 +142,7 @@
     "regenerator-runtime": "^0.13.7",
     "sax": "^1.2.4",
     "ts-node": "^8.10.2",
-    "typescript": "^3.9.7"
+    "typescript": "^5.9.3"
   },
   "overrides": {
     "asn1.js": "^5.4.1",
