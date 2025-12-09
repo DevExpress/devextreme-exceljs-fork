@@ -146,6 +146,7 @@
   },
   "overrides": {
     "asn1.js": "^5.4.1",
+    "glob": "^10.5.0",
     "grunt-exorcise": {
       "exorcist": "^2.0.0"
     },
