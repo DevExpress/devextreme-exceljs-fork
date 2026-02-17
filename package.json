@@ -10,7 +10,7 @@
     "url": "https://github.com/DevExpress/devextreme-exceljs-fork.git"
   },
   "engines": {
-    "node": ">=16.20.2"
+    "node": ">=18.20.8"
   },
   "main": "./dx-excel-fork.js",
   "browser": "./dist/dx-exceljs-fork.min.js",
