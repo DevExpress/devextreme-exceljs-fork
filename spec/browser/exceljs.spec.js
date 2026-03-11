@@ -1,91 +1,81 @@
-/* global ExcelJS */
-// ExcelJS is a global injected by `./dist/exceljs.js` during jasmine's setup
-
 'use strict';
 
-function unexpectedError(done) {
-  return function(error) {
-    // eslint-disable-next-line no-console
-    console.error('Error Caught', error.message, error.stack);
-    expect(true).toEqual(false);
-    done();
-  };
-}
+const {test, expect} = require('@playwright/test');
+const path = require('path');
 
-describe('ExcelJS', () => {
-  it('should read and write xlsx via binary buffer', done => {
-    const wb = new ExcelJS.Workbook();
-    const ws = wb.addWorksheet('blort');
+const testPagePath = path.resolve(__dirname, 'exceljs.spec.html');
 
-    ws.getCell('A1').value = 'Hello, World!';
-    ws.getCell('A2').value = 7;
-
-    wb.xlsx
-      .writeBuffer()
-      .then(buffer => {
-        const wb2 = new ExcelJS.Workbook();
-        return wb2.xlsx.load(buffer).then(() => {
-          const ws2 = wb2.getWorksheet('blort');
-          expect(ws2).toBeTruthy();
-
-          expect(ws2.getCell('A1').value).toEqual('Hello, World!');
-          expect(ws2.getCell('A2').value).toEqual(7);
-          done();
-        });
-      })
-      .catch(error => {
-        throw error;
-      })
-      .catch(unexpectedError(done));
+test.describe('ExcelJS Browser', () => {
+  test.beforeEach(async ({page}) => {
+    await page.goto(`file://${testPagePath}`);
+    await page.waitForFunction(() => typeof window.ExcelJS !== 'undefined');
   });
-  it('should read and write xlsx via base64 buffer', done => {
-    const options = {
-      base64: true,
-    };
-    const wb = new ExcelJS.Workbook();
-    const ws = wb.addWorksheet('blort');
 
-    ws.getCell('A1').value = 'Hello, World!';
-    ws.getCell('A2').value = 7;
+  test('should read and write xlsx via binary buffer', async ({page}) => {
+    const result = await page.evaluate(async () => {
+      const wb = new ExcelJS.Workbook();
+      const ws = wb.addWorksheet('blort');
 
-    wb.xlsx
-      .writeBuffer(options)
-      .then(buffer => {
-        const wb2 = new ExcelJS.Workbook();
-        return wb2.xlsx.load(buffer.toString('base64'), options).then(() => {
-          const ws2 = wb2.getWorksheet('blort');
-          expect(ws2).toBeTruthy();
+      ws.getCell('A1').value = 'Hello, World!';
+      ws.getCell('A2').value = 7;
 
-          expect(ws2.getCell('A1').value).toEqual('Hello, World!');
-          expect(ws2.getCell('A2').value).toEqual(7);
-          done();
-        });
-      })
-      .catch(error => {
-        throw error;
-      })
-      .catch(unexpectedError(done));
+      const buffer = await wb.xlsx.writeBuffer();
+      const wb2 = new ExcelJS.Workbook();
+      await wb2.xlsx.load(buffer);
+
+      const ws2 = wb2.getWorksheet('blort');
+      return {
+        wsExists: !!ws2,
+        a1: ws2.getCell('A1').value,
+        a2: ws2.getCell('A2').value,
+      };
+    });
+
+    expect(result.wsExists).toBe(true);
+    expect(result.a1).toBe('Hello, World!');
+    expect(result.a2).toBe(7);
   });
-  it('should write csv via buffer', done => {
-    const wb = new ExcelJS.Workbook();
-    const ws = wb.addWorksheet('blort');
 
-    ws.getCell('A1').value = 'Hello, World!';
-    ws.getCell('B1').value = 'What time is it?';
-    ws.getCell('A2').value = 7;
-    ws.getCell('B2').value = '12pm';
+  test('should read and write xlsx via base64 buffer', async ({page}) => {
+    const result = await page.evaluate(async () => {
+      const options = {base64: true};
+      const wb = new ExcelJS.Workbook();
+      const ws = wb.addWorksheet('blort');
 
-    wb.csv
-      .writeBuffer()
-      .then(buffer => {
-        expect(buffer.toString()).toEqual(
-          '"Hello, World!",What time is it?\n7,12pm'
-        );
-        done();
-      })
-      .catch(error => {
-        throw error;
-      })
-      .catch(unexpectedError(done));
+      ws.getCell('A1').value = 'Hello, World!';
+      ws.getCell('A2').value = 7;
+
+      const buffer = await wb.xlsx.writeBuffer(options);
+      const wb2 = new ExcelJS.Workbook();
+      await wb2.xlsx.load(buffer.toString('base64'), options);
+
+      const ws2 = wb2.getWorksheet('blort');
+      return {
+        wsExists: !!ws2,
+        a1: ws2.getCell('A1').value,
+        a2: ws2.getCell('A2').value,
+      };
+    });
+
+    expect(result.wsExists).toBe(true);
+    expect(result.a1).toBe('Hello, World!');
+    expect(result.a2).toBe(7);
+  });
+
+  test('should write csv via buffer', async ({page}) => {
+    const csvText = await page.evaluate(async () => {
+      const wb = new ExcelJS.Workbook();
+      const ws = wb.addWorksheet('blort');
+
+      ws.getCell('A1').value = 'Hello, World!';
+      ws.getCell('B1').value = 'What time is it?';
+      ws.getCell('A2').value = 7;
+      ws.getCell('B2').value = '12pm';
+
+      const buffer = await wb.csv.writeBuffer();
+      return buffer.toString();
+    });
+
+    expect(csvText).toBe('"Hello, World!",What time is it?\n7,12pm');
   });
 });

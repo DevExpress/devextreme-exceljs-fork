@@ -16,7 +16,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-babel');
   grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-terser');
-  grunt.loadNpmTasks('grunt-contrib-jasmine');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-exorcise');
 
@@ -30,7 +29,7 @@ module.exports = function(grunt) {
         files: [
           {
             expand: true,
-            src: ['./lib/**/*.js', './spec/browser/*.js'],
+            src: ['./lib/**/*.js'],
             dest: './build/',
           },
         ],
@@ -67,14 +66,6 @@ module.exports = function(grunt) {
         // keep the original source for source maps
         src: ['./lib/dx-exceljs-fork.browser.js'],
         dest: './dist/dx-exceljs-fork.js',
-      },
-      spec: {
-        options: {
-          transform: null,
-          browserifyOptions: null,
-        },
-        src: ['./build/spec/browser/exceljs.spec.js'],
-        dest: './build/web/exceljs.spec.js',
       },
     },
 
@@ -133,18 +124,6 @@ module.exports = function(grunt) {
       },
     },
 
-    jasmine: {
-      options: {
-        version: '5.9.0',
-        noSandbox: true,
-      },
-      dev: {
-        src: ['./dist/dx-exceljs-fork.js'],
-        options: {
-          specs: './build/web/exceljs.spec.js',
-        },
-      },
-    },
   });
 
   grunt.registerTask('build', ['babel:dist', 'browserify', 'terser', 'exorcise', 'copy']);

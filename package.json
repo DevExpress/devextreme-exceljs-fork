@@ -28,16 +28,14 @@
   "scripts": {
     "test": "npm run test:full",
     "test:es5": "export EXCEL_BUILD=es5 && npm run test:full",
-    "test:full": "npm run build && npm run test:unit && npm run test:integration && npm run test:end-to-end && npm run test:jasmine",
-    "test:no-jasmine": "npm run build && npm run test:unit && npm run test:integration && npm run test:end-to-end",
+    "test:full": "npm run build && npm run test:unit && npm run test:integration && npm run test:end-to-end && npm run test:browser",
     "test:version": "npm run build && npm run test:unit && npm run test:integration && npm run test:end-to-end && npm run test:browser && npm run test:dist",
     "test:all": "npm run test:native && npm run test:es5",
     "test:native": "npm run test:full",
     "test:unit": "mocha --require spec/config/setup --require spec/config/setup-unit spec/unit --recursive",
     "test:integration": "mocha --require spec/config/setup spec/integration --recursive",
     "test:end-to-end": "mocha --require spec/config/setup spec/end-to-end --recursive",
-    "test:browser": "if [ ! -f .disable-test-browser ]; then npm run build && npm run test:jasmine; fi",
-    "test:jasmine": "grunt jasmine",
+    "test:browser": "npx playwright install --with-deps chromium && npx playwright test",
     "test:unit:es5": "export EXCEL_BUILD=es5 && npm run test:unit",
     "test:integration:es5": "export EXCEL_BUILD=es5 && npm run test:integration",
     "test:end-to-end:es5": "export EXCEL_BUILD=es5 && npm run test:end-to-end",
@@ -109,6 +107,7 @@
     "@babel/cli": "^7.10.5",
     "@babel/core": "^7.11.4",
     "@babel/preset-env": "^7.11.0",
+    "@playwright/test": "^1.58.2",
     "@types/chai": "^4.2.12",
     "@types/mocha": "^8.0.3",
     "@types/node": "^18.19.0",
@@ -131,7 +130,6 @@
     "grunt-babel": "^8.0.0",
     "grunt-browserify": "^6.0.0",
     "grunt-contrib-copy": "^1.0.0",
-    "grunt-contrib-jasmine": "^4.0.0",
     "grunt-contrib-watch": "^1.1.0",
     "grunt-exorcise": "^2.1.1",
     "grunt-terser": "^2.0.0",
@@ -151,9 +149,6 @@
     "qs": "~6.14.1",
     "grunt-exorcise": {
       "exorcist": "^2.0.0"
-    },
-    "grunt-contrib-jasmine": {
-      "puppeteer": "^24.12.0"
     },
     "tar": "^7.5.11",
     "minimatch": "^10.2.4",
