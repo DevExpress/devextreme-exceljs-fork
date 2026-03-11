@@ -35,7 +35,7 @@
     "test:unit": "mocha --require spec/config/setup --require spec/config/setup-unit spec/unit --recursive",
     "test:integration": "mocha --require spec/config/setup spec/integration --recursive",
     "test:end-to-end": "mocha --require spec/config/setup spec/end-to-end --recursive",
-    "test:browser": "npx playwright install --with-deps chromium && npx playwright test",
+    "test:browser": "npx playwright test",
     "test:unit:es5": "export EXCEL_BUILD=es5 && npm run test:unit",
     "test:integration:es5": "export EXCEL_BUILD=es5 && npm run test:integration",
     "test:end-to-end:es5": "export EXCEL_BUILD=es5 && npm run test:end-to-end",

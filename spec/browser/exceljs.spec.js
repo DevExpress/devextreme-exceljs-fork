@@ -2,12 +2,13 @@
 
 const {test, expect} = require('@playwright/test');
 const path = require('path');
+const {pathToFileURL} = require('url');
 
-const testPagePath = path.resolve(__dirname, 'exceljs.spec.html');
+const testPageURL = pathToFileURL(path.resolve(__dirname, 'exceljs.spec.html')).href;
 
 test.describe('ExcelJS Browser', () => {
   test.beforeEach(async ({page}) => {
-    await page.goto(`file://${testPagePath}`);
+    await page.goto(testPageURL);
     await page.waitForFunction(() => typeof window.ExcelJS !== 'undefined');
   });
 
