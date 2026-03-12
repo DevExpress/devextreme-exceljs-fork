@@ -59,13 +59,28 @@ module.exports = function(grunt) {
         },
       },
       bare: {
-        // keep the original source for source maps
-        src: ['./lib/dx-exceljs-fork.bare.js'],
+        // Entries are specified explicitly via browserifyOptions to work around
+        // glob v13 + minimatch v10 treating backslashes as escape chars on Windows,
+        // which causes grunt.file.expand to return empty results.
+        options: {
+          browserifyOptions: {
+            debug: true,
+            standalone: 'ExcelJS',
+            entries: ['./lib/dx-exceljs-fork.bare.js'],
+          },
+        },
+        src: [],
         dest: './dist/dx-exceljs-fork.bare.js',
       },
       bundle: {
-        // keep the original source for source maps
-        src: ['./lib/dx-exceljs-fork.browser.js'],
+        options: {
+          browserifyOptions: {
+            debug: true,
+            standalone: 'ExcelJS',
+            entries: ['./lib/dx-exceljs-fork.browser.js'],
+          },
+        },
+        src: [],
         dest: './dist/dx-exceljs-fork.js',
       },
       spec: {

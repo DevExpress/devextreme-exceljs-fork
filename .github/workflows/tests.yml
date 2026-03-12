@@ -34,15 +34,6 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - run: npm test
-        if: runner.os != 'Windows'
-        env:
-          CI: true
-      # Security advisory GHSA-3ppc-4f35-3m26 required updating the minimatch package.
-      # minimatch is used transitively by glob, which we updated to the latest version.
-      # However, the latest version of glob is incompatible with grunt on Windows,
-      # causing Jasmine tests to fail. To work around this, Jasmine tests are skipped on Windows.
-      - run: npm run test:no-jasmine
-        if: runner.os == 'Windows'
         env:
           CI: true
 
