@@ -10,7 +10,7 @@ module.exports = defineConfig({
   reporter: process.env.CI ? 'dot' : 'list',
   projects: [
     {
-      name: 'chromium',
+      name: 'chrome',
       use: {
         channel: 'chrome',
       },
