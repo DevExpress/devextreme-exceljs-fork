@@ -23,7 +23,7 @@ jobs:
     environment: npmjs
     steps:
       - name: Checkout devextreme-exceljs-fork repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ inputs.version }}
 
