@@ -152,7 +152,7 @@
     },
     "tar": "^7.5.11",
     "minimatch": "^10.2.4",
-    "serialize-javascript": "^7.0.4",
+    "serialize-javascript": "^7.0.5",
     "flatted": "^3.4.2",
     "path-to-regexp": "^0.1.13",
     "picomatch": "^2.3.2"
