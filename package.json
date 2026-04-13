@@ -155,6 +155,7 @@
     "serialize-javascript": "^7.0.5",
     "flatted": "^3.4.2",
     "path-to-regexp": "^0.1.13",
-    "picomatch": "^2.3.2"
+    "picomatch": "^2.3.2",
+    "lodash": "~4.18.1"
   }
 }
