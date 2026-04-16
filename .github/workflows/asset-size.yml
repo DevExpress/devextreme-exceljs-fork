@@ -14,9 +14,15 @@ jobs:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: 'pnpm'
       - uses: chrysanthos/simple-asset-size-reporter@1.0.2
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
           files: '["dist/*.js"]'
           with-same: "false"
-          build-assets: "npm run prepare-and-install"
+          build-assets: "pnpm run prepare-and-install"

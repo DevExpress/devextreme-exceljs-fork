@@ -13,7 +13,7 @@ Reverse engineered from Excel spreadsheet files as a project.
 # Installation
 
 ```shell
-npm install devextreme-exceljs-fork
+pnpm install devextreme-exceljs-fork
 ```
 
 # New Features!
