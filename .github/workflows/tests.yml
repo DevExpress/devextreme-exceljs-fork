@@ -27,13 +27,15 @@ jobs:
           git config --global core.symlinks true
         if: runner.os == 'Windows'
       - uses: actions/checkout@v6
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-      - run: npm ci
-      - run: npm test
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test
         env:
           CI: true
 
@@ -46,12 +48,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v6
         with:
           node-version: 18
-          cache: 'npm'
-      - run: npm ci
-      - run: npm run benchmark
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run benchmark
         env:
           CI: true
 
@@ -64,11 +68,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v6
         with:
           node-version: 18
-          cache: 'npm'
-      - run: npm ci
-      - run: npm run type-check
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run type-check
         env:
           CI: true

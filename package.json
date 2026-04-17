@@ -1,6 +1,7 @@
 {
   "name": "devextreme-exceljs-fork",
   "version": "4.4.8",
+  "packageManager": "pnpm@9.15.9",
   "description": "Fork of Excel Workbook Manager - Read and Write xlsx and csv Files.",
   "private": false,
   "license": "MIT",
@@ -26,24 +27,24 @@
     "index.d.ts"
   ],
   "scripts": {
-    "test": "npm run test:full",
-    "test:es5": "export EXCEL_BUILD=es5 && npm run test:full",
-    "test:full": "npm run build && npm run test:unit && npm run test:integration && npm run test:end-to-end && npm run test:browser",
-    "test:version": "npm run build && npm run test:unit && npm run test:integration && npm run test:end-to-end && npm run test:browser && npm run test:dist",
-    "test:all": "npm run test:native && npm run test:es5",
-    "test:native": "npm run test:full",
+    "test": "pnpm run test:full",
+    "test:es5": "export EXCEL_BUILD=es5 && pnpm run test:full",
+    "test:full": "pnpm run build && pnpm run test:unit && pnpm run test:integration && pnpm run test:end-to-end && pnpm run test:browser",
+    "test:version": "pnpm run build && pnpm run test:unit && pnpm run test:integration && pnpm run test:end-to-end && pnpm run test:browser && pnpm run test:dist",
+    "test:all": "pnpm run test:native && pnpm run test:es5",
+    "test:native": "pnpm run test:full",
     "test:unit": "mocha --require spec/config/setup --require spec/config/setup-unit spec/unit --recursive",
     "test:integration": "mocha --require spec/config/setup spec/integration --recursive",
     "test:end-to-end": "mocha --require spec/config/setup spec/end-to-end --recursive",
-    "test:browser": "npx playwright test",
-    "test:unit:es5": "export EXCEL_BUILD=es5 && npm run test:unit",
-    "test:integration:es5": "export EXCEL_BUILD=es5 && npm run test:integration",
-    "test:end-to-end:es5": "export EXCEL_BUILD=es5 && npm run test:end-to-end",
+    "test:browser": "pnpm exec playwright test",
+    "test:unit:es5": "export EXCEL_BUILD=es5 && pnpm run test:unit",
+    "test:integration:es5": "export EXCEL_BUILD=es5 && pnpm run test:integration",
+    "test:end-to-end:es5": "export EXCEL_BUILD=es5 && pnpm run test:end-to-end",
     "test:dist": "mocha --require spec/config/setup spec/dist --recursive",
     "test:manual": "node spec/manual/app.js",
     "test:typescript": "mocha -r ts-node/register spec/typescript/**/*.spec.ts",
     "type-check": "tsc index.d.ts",
-    "clean-build": "npm run clean && npm run build",
+    "clean-build": "pnpm run clean && pnpm run build",
     "lint": "eslint --format node_modules/eslint-friendly-formatter .",
     "lint:fix": "prettier-eslint --write $(pwd)'/**/*.js'",
     "lint:staged": "lint-staged",
@@ -51,8 +52,8 @@
     "benchmark": "node --expose-gc benchmark",
     "benchmark:debug": "node --expose-gc --inspect-brk --trace-deopt benchmark",
     "build": "grunt build",
-    "prepare-and-install": "npm ci && grunt build",
-    "preversion": "npm run clean && npm run build && npm run test:version",
+    "prepare-and-install": "pnpm install --frozen-lockfile && grunt build",
+    "preversion": "pnpm run clean && pnpm run build && pnpm run test:version",
     "postversion": "git push --no-verify && git push --tags --no-verify"
   },
   "husky": {
@@ -143,19 +144,20 @@
     "ts-node": "^8.10.2",
     "typescript": "^5.9.3"
   },
-  "overrides": {
-    "asn1.js": "^5.4.1",
-    "glob": "^13.0.6",
-    "qs": "~6.14.1",
-    "grunt-exorcise": {
-      "exorcist": "^2.0.0"
-    },
-    "tar": "^7.5.11",
-    "minimatch": "^10.2.4",
-    "serialize-javascript": "^7.0.5",
-    "flatted": "^3.4.2",
-    "path-to-regexp": "^0.1.13",
-    "picomatch": "^2.3.2",
-    "lodash": "~4.18.1"
+  "pnpm": {
+    "overrides": {
+      "asn1.js": "^5.4.1",
+      "glob": "^13.0.6",
+      "qs": "~6.14.1",
+      "grunt-exorcise>exorcist": "^2.0.0",
+      "tar": "^7.5.11",
+      "minimatch": "^10.2.4",
+      "eslint-plugin-import>minimatch": "^3.1.4",
+      "serialize-javascript": "^7.0.5",
+      "flatted": "^3.4.2",
+      "path-to-regexp": "^0.1.13",
+      "picomatch": "^2.3.2",
+      "lodash": "~4.18.1"
+    }
   }
 }

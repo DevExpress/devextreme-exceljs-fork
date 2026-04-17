@@ -11,7 +11,7 @@
 # 安装
 
 ```shell
-npm install devextreme-exceljs-fork
+pnpm install devextreme-exceljs-fork
 ```
 
 # 新的功能!
