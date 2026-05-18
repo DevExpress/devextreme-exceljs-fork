@@ -28,7 +28,7 @@ importers:
         specifier: ^7.0.1
         version: 7.0.1
       dayjs:
-        specifier: ^1.8.34
+        specifier: ^1.11.20
         version: 1.11.20
       fast-csv:
         specifier: ^5.0.5
@@ -37,38 +37,38 @@ importers:
         specifier: ^3.10.1
         version: 3.10.1
       readable-stream:
-        specifier: ^3.6.0
+        specifier: ^3.6.2
         version: 3.6.2
       saxes:
         specifier: ^5.0.1
         version: 5.0.1
       tmp:
-        specifier: ^0.2.0
+        specifier: ^0.2.5
         version: 0.2.5
       unzipper:
         specifier: ^0.12.3
         version: 0.12.3
     devDependencies:
       '@babel/cli':
-        specifier: ^7.10.5
+        specifier: ^7.28.6
         version: 7.28.6(@babel/core@7.29.0)
       '@babel/core':
-        specifier: ^7.11.4
+        specifier: ^7.29.0
         version: 7.29.0
       '@babel/preset-env':
-        specifier: ^7.29.4
+        specifier: ^7.29.5
         version: 7.29.5(@babel/core@7.29.0)
       '@playwright/test':
-        specifier: ^1.58.2
+        specifier: ^1.59.1
         version: 1.59.1
       '@types/chai':
-        specifier: ^4.2.12
+        specifier: ^4.3.20
         version: 4.3.20
       '@types/mocha':
-        specifier: ^8.0.3
+        specifier: ^8.2.3
         version: 8.2.3
       '@types/node':
-        specifier: ^18.19.0
+        specifier: ^18.19.130
         version: 18.19.130
       babelify:
         specifier: ^10.0.0
@@ -77,7 +77,7 @@ importers:
         specifier: ^16.5.2
         version: 16.5.2
       chai:
-        specifier: ^4.3.7
+        specifier: ^4.5.0
         version: 4.5.0
       chai-datetime:
         specifier: ^1.8.1
@@ -86,13 +86,13 @@ importers:
         specifier: ^0.4.1
         version: 0.4.1(chai@4.5.0)
       core-js:
-        specifier: ^3.6.5
+        specifier: ^3.49.0
         version: 3.49.0
       dirty-chai:
         specifier: ^2.0.1
         version: 2.0.1(chai@4.5.0)
       eslint:
-        specifier: ^8.57.0
+        specifier: ^8.57.1
         version: 8.57.1
       eslint-config-airbnb-base:
         specifier: ^15.0.0
@@ -110,13 +110,13 @@ importers:
         specifier: ^14.0.0
         version: 14.0.0(eslint@8.57.1)
       express:
-        specifier: ^4.16.4
+        specifier: ^4.22.1
         version: 4.22.1
       got:
-        specifier: ^11.8.3
+        specifier: ^11.8.6
         version: 11.8.6
       grunt:
-        specifier: ^1.3.0
+        specifier: ^1.6.2
         version: 1.6.2
       grunt-babel:
         specifier: ^8.0.0
@@ -140,10 +140,10 @@ importers:
         specifier: ^9.1.7
         version: 9.1.7
       lint-staged:
-        specifier: ^10.2.13
+        specifier: ^10.5.4
         version: 10.5.4
       mocha:
-        specifier: ^11.7.1
+        specifier: ^11.7.5
         version: 11.7.5
       prettier-eslint:
         specifier: ^16.4.2
@@ -152,10 +152,10 @@ importers:
         specifier: ^8.0.1
         version: 8.0.1(prettier-eslint@16.4.2(typescript@5.9.3))(typescript@5.9.3)
       regenerator-runtime:
-        specifier: ^0.13.7
+        specifier: ^0.13.11
         version: 0.13.11
       sax:
-        specifier: ^1.2.4
+        specifier: ^1.6.0
         version: 1.6.0
       ts-node:
         specifier: ^8.10.2
@@ -843,6 +843,7 @@ packages:
 
   '@ungap/structured-clone@1.3.0':
     resolution: {integrity: sha512-WmoN8qaIAo7WTYWbAZuG8PYEhn5fkz7dZrqTBZ7dtt//lL2Gwms1IcnQ5yHqjDfX8Ft5j4YzDM23f87zBfDe9g==}
+    deprecated: Potential CWE-502 - Update to 1.3.1 or higher
 
   JSONStream@0.10.0:
     resolution: {integrity: sha512-8XbSFFd43EG+1thjLNFIzCBlwXti0yKa7L+ak/f0T/pkC+31b7G41DXL/JzYpAoYWZ2eCPiu4IIqzijM8N0a/w==}
@@ -1133,8 +1134,8 @@ packages:
   brace-expansion@1.1.14:
     resolution: {integrity: sha512-MWPGfDxnyzKU7rNOW9SP/c50vi3xrmrua/+6hfPbCS2ABNWfx24vPidzvC7krjU/RTo235sV776ymlsMtGKj8g==}
 
-  brace-expansion@5.0.5:
-    resolution: {integrity: sha512-VZznLgtwhn+Mact9tfiwx64fA9erHH/MCXEUfB/0bX/6Fz6ny5EGTXYltMocqg4xFAQZtnO3DHWWXi8RiuN7cQ==}
+  brace-expansion@5.0.6:
+    resolution: {integrity: sha512-kLpxurY4Z4r9sgMsyG0Z9uzsBlgiU/EFKhj/h91/8yHu0edo7XuixOIH3VcJ8kkxs6/jPzoI6U9Vj3WqbMQ94g==}
     engines: {node: 18 || 20 || >=22}
 
   braces@3.0.3:
@@ -4982,7 +4983,7 @@ snapshots:
       balanced-match: 1.0.2
       concat-map: 0.0.1
 
-  brace-expansion@5.0.5:
+  brace-expansion@5.0.6:
     dependencies:
       balanced-match: 4.0.4
 
@@ -6873,7 +6874,7 @@ snapshots:
 
   minimatch@10.2.5:
     dependencies:
-      brace-expansion: 5.0.5
+      brace-expansion: 5.0.6
 
   minimatch@3.1.5:
     dependencies:
