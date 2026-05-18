@@ -142,7 +142,7 @@
     "overrides": {
       "asn1.js": "^5.4.1",
       "glob": "^13.0.6",
-      "qs": "~6.14.1",
+      "qs": "~6.15.0",
       "grunt-exorcise>exorcist": "^2.0.0",
       "tar": "^7.5.11",
       "minimatch": "^10.2.4",
