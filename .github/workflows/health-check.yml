@@ -13,3 +13,10 @@ jobs:
   invoke:
     name: Invoke
     uses: DevExpress/github-actions/.github/workflows/repository-check.yml@repository-check
+    with:
+      config: |
+        {
+          ignoredAdvisories: [
+            'GHSA-848j-6mx2-7j84', // elliptic
+          ]
+        }
