@@ -11,7 +11,7 @@
     "url": "https://github.com/DevExpress/devextreme-exceljs-fork.git"
   },
   "engines": {
-    "node": ">=18"
+    "node": "24.15.0"
   },
   "main": "./dx-excel-fork.js",
   "browser": "./dist/dx-exceljs-fork.min.js",
@@ -105,7 +105,7 @@
     "@playwright/test": "^1.58.2",
     "@types/chai": "^4.2.12",
     "@types/mocha": "^8.0.3",
-    "@types/node": "^18.19.0",
+    "@types/node": "^24.12.4",
     "babelify": "^10.0.0",
     "browserify": "^16.5.2",
     "chai": "^4.3.7",
