@@ -44,7 +44,7 @@ importers:
         version: 5.0.1
       tmp:
         specifier: ^0.2.0
-        version: 0.2.5
+        version: 0.2.6
       unzipper:
         specifier: ^0.12.3
         version: 0.12.3
@@ -3508,8 +3508,8 @@ packages:
   tiny-lr@1.1.1:
     resolution: {integrity: sha512-44yhA3tsaRoMOjQQ+5v5mVdqef+kH6Qze9jTpqtVufgYjYt08zyZAwNwwVBj3i1rJMnR52IxOW0LK0vBzgAkuA==}
 
-  tmp@0.2.5:
-    resolution: {integrity: sha512-voyz6MApa1rQGUxT3E+BK7/ROe8itEx7vD8/HEvt4xwXucvQ5G5oeEiHkmHZJuBO21RpOf+YYm9MOivj709jow==}
+  tmp@0.2.6:
+    resolution: {integrity: sha512-5sJPdPjfI5Kx+qbrDesxkglRBxW//g7hCsqspEjwkewGvBMGIKMOTKzLt1hFVJzyadba3lDUN20O9qhvbQUSTA==}
     engines: {node: '>=14.14'}
 
   to-buffer@1.2.2:
@@ -7822,7 +7822,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  tmp@0.2.5: {}
+  tmp@0.2.6: {}
 
   to-buffer@1.2.2:
     dependencies:
