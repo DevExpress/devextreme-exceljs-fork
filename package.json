@@ -133,7 +133,7 @@
     "mocha": "^11.7.1",
     "prettier-eslint": "^16.4.2",
     "prettier-eslint-cli": "^8.0.1",
-    "regenerator-runtime": "^0.13.7",
+    "regenerator-runtime": "^0.14.0",
     "sax": "^1.2.4",
     "ts-node": "^8.10.2",
     "typescript": "^5.9.3"
