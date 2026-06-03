@@ -11,7 +11,7 @@
     "url": "https://github.com/DevExpress/devextreme-exceljs-fork.git"
   },
   "engines": {
-    "node": "24.15.0"
+    "node": "24.16.0"
   },
   "main": "./dx-excel-fork.js",
   "browser": "./dist/dx-exceljs-fork.min.js",
