@@ -10,6 +10,9 @@
     "type": "git",
     "url": "https://github.com/DevExpress/devextreme-exceljs-fork.git"
   },
+  "engines": {
+    "node": ">=18"
+  },
   "main": "./dx-excel-fork.js",
   "browser": "./dist/dx-exceljs-fork.min.js",
   "types": "./index.d.ts",
