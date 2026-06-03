@@ -104,7 +104,7 @@
     "@babel/preset-env": "^7.29.4",
     "@playwright/test": "^1.58.2",
     "@types/chai": "^4.2.12",
-    "@types/mocha": "^8.0.3",
+    "@types/mocha": "^10.0.0",
     "@types/node": "^24.12.4",
     "babelify": "^10.0.0",
     "browserify": "^17.0.0",
@@ -133,7 +133,7 @@
     "mocha": "^11.7.1",
     "prettier-eslint": "^16.4.2",
     "prettier-eslint-cli": "^8.0.1",
-    "regenerator-runtime": "^0.13.7",
+    "regenerator-runtime": "^0.14.0",
     "sax": "^1.2.4",
     "ts-node": "^8.10.2",
     "typescript": "^5.9.3"
