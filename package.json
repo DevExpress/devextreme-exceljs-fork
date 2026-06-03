@@ -1,6 +1,6 @@
 {
   "name": "devextreme-exceljs-fork",
-  "version": "4.4.10",
+  "version": "4.4.11",
   "packageManager": "pnpm@9.15.9",
   "description": "Fork of Excel Workbook Manager - Read and Write xlsx and csv Files.",
   "private": false,
@@ -9,9 +9,6 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/DevExpress/devextreme-exceljs-fork.git"
-  },
-  "engines": {
-    "node": "24.15.0"
   },
   "main": "./dx-excel-fork.js",
   "browser": "./dist/dx-exceljs-fork.min.js",
