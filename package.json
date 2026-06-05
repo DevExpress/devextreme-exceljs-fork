@@ -103,7 +103,7 @@
     "@babel/core": "^7.11.4",
     "@babel/preset-env": "^7.29.4",
     "@playwright/test": "^1.58.2",
-    "@types/chai": "^4.2.12",
+    "@types/chai": "^5.0.0",
     "@types/mocha": "^10.0.0",
     "@types/node": "^24.12.4",
     "babelify": "^10.0.0",
