@@ -48,7 +48,7 @@ jobs:
 
       - name: Pack package
         run: |
-          package_tgz=$(pnpm pack --json | node -pe "JSON.parse(require('fs').readFileSync(0, 'utf8')).filename")
+          package_tgz=$(pnpm pack --json | jq -r '.filename')
           echo "PACKAGE_TGZ=$package_tgz" >> "$GITHUB_ENV"
 
       - name: Verify build artifacts
