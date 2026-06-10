@@ -46,6 +46,11 @@ jobs:
       - name: Build package
         run: pnpm run build
 
+      - name: Pack package
+        run: |
+          package_tgz=$(pnpm pack --json | jq -er '.filename')
+          echo "PACKAGE_TGZ=$package_tgz" >> "$GITHUB_ENV"
+
       - name: Verify build artifacts
         run: |
           echo "Verifying build artifacts..."
@@ -67,8 +72,13 @@ jobs:
         env:
           DRY_RUN: "${{ inputs.dry-run }}"
         run: |
+          if [ -z "$PACKAGE_TGZ" ] || [ ! -f "$PACKAGE_TGZ" ]; then
+            echo "Error: packed tgz file not found: $PACKAGE_TGZ"
+            exit 1
+          fi
+
           if [ "$DRY_RUN" = true ]; then
-            npm publish --dry-run
+            npm publish "$PACKAGE_TGZ" --dry-run
           else
-            npm publish
+            npm publish "$PACKAGE_TGZ"
           fi
