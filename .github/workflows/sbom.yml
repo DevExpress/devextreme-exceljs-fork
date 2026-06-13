@@ -1,32 +1,21 @@
-name: Publish
+name: SBOM
 
 on:
-  workflow_dispatch:
-    inputs:
-      version:
-        type: string
-        required: true
-        description: Publishing version (tag name)
-      dry-run:
-        type: boolean
-        required: false
-        default: false
-        description: Dry run
+  push:
+    branches:
+      - sbom-dev
 
 permissions:
-  id-token: write  # Required for OIDC (Trusted Publishing)
   contents: read
   packages: read
 
 jobs:
-  publish:
+  sbom:
+    if: ${{ github.event_name == 'push' && github.ref_type == 'branch' && github.ref_name == 'sbom-dev' }}
     runs-on: ubuntu-latest
-    environment: npmjs
     steps:
       - name: Checkout devextreme-exceljs-fork repository
         uses: actions/checkout@v6
-        with:
-          ref: ${{ inputs.version }}
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v6
@@ -58,7 +47,7 @@ jobs:
           name: package
           path: ${{ env.PACKAGE_TGZ }}
           if-no-files-found: error
-          retention-days: 14
+          retention-days: 1
 
       - name: Build SBOM
         env:
@@ -73,41 +62,17 @@ jobs:
           name: sbom
           path: tools/make-sbom/dist
           if-no-files-found: error
-          retention-days: 14
+          retention-days: 1
+
+      # - name: Break SBOM
+      #   run: |
+      #     jq '.specVersion += "aaa"' tools/make-sbom/dist/devextreme-exceljs-fork.cdx.json > t && mv t tools/make-sbom/dist/devextreme-exceljs-fork.cdx.json
 
       - name: Validate SBOM
         uses: mpreyskurantov/github-actions/validate-sbom@sbom-val-dev
         with:
           input-file: tools/make-sbom/dist/devextreme-exceljs-fork.cdx.json
 
-      - name: Verify build artifacts
+      - name: Publish to NPM (dry run)
         run: |
-          echo "Verifying build artifacts..."
-          if [ ! -d "dist" ]; then
-            echo "Error: dist directory not found"
-            exit 1
-          fi
-          if [ ! -f "dist/dx-exceljs-fork.min.js" ]; then
-            echo "Error: minified bundle not found"
-            exit 1
-          fi
-          if [ ! -f "dist/dx-exceljs-fork.js" ]; then
-            echo "Error: main bundle not found"
-            exit 1
-          fi
-          echo "All build artifacts verified successfully"
-
-      - name: Publish to NPM
-        env:
-          DRY_RUN: "${{ inputs.dry-run }}"
-        run: |
-          if [ -z "$PACKAGE_TGZ" ] || [ ! -f "$PACKAGE_TGZ" ]; then
-            echo "Error: packed tgz file not found: $PACKAGE_TGZ"
-            exit 1
-          fi
-
-          if [ "$DRY_RUN" = true ]; then
-            pnpm publish "$PACKAGE_TGZ" --provenance --dry-run
-          else
-            pnpm publish "$PACKAGE_TGZ" --provenance
-          fi
+          pnpm publish "$PACKAGE_TGZ" --no-git-checks --dry-run
