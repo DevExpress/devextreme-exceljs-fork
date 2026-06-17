@@ -1,9 +1,6 @@
 name: SBOM
 
 on:
-  push:
-    branches:
-      - sbom-dev
   workflow_dispatch:
 
 permissions:
@@ -12,7 +9,6 @@ permissions:
 
 jobs:
   sbom:
-    if: ${{ github.event.repository.fork != true }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout devextreme-exceljs-fork repository
