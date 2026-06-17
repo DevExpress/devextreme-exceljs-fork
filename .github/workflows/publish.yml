@@ -76,7 +76,7 @@ jobs:
           retention-days: 14
 
       - name: Validate SBOM
-        uses: mpreyskurantov/github-actions/validate-sbom@sbom-val-dev
+        uses: DevExpress/github-actions/validate-sbom@v1
         with:
           input-file: tools/make-sbom/dist/devextreme-exceljs-fork.cdx.json
 

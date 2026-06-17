@@ -64,12 +64,8 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
-      # - name: Break SBOM
-      #   run: |
-      #     jq '.specVersion += "aaa"' tools/make-sbom/dist/devextreme-exceljs-fork.cdx.json > t && mv t tools/make-sbom/dist/devextreme-exceljs-fork.cdx.json
-
       - name: Validate SBOM
-        uses: mpreyskurantov/github-actions/validate-sbom@sbom-val-dev
+        uses: DevExpress/github-actions/validate-sbom@v1
         with:
           input-file: tools/make-sbom/dist/devextreme-exceljs-fork.cdx.json
 
