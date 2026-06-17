@@ -20,9 +20,8 @@ jobs:
         with:
           node-version-file: '.node-version'
           cache: 'pnpm'
-      - uses: chrysanthos/simple-asset-size-reporter@1.0.2
+      - uses: preactjs/compressed-size-action@v2
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
-          files: '["dist/*.js"]'
-          with-same: "false"
-          build-assets: "pnpm run prepare-and-install"
+          pattern: "./dist/*.js"
+          build-script: "build"
