@@ -99,9 +99,9 @@
     "unzipper": "^0.12.3"
   },
   "devDependencies": {
-    "@babel/cli": "^7.10.5",
-    "@babel/core": "^7.11.4",
-    "@babel/preset-env": "^7.29.4",
+    "@babel/cli": "^8.0.0",
+    "@babel/core": "^8.0.0",
+    "@babel/preset-env": "^8.0.0",
     "@playwright/test": "^1.58.2",
     "@types/chai": "^5.0.0",
     "@types/mocha": "^10.0.0",
