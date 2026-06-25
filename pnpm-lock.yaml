@@ -71,9 +71,6 @@ importers:
       '@types/node':
         specifier: ^24.12.4
         version: 24.13.2
-      babelify:
-        specifier: ^10.0.0
-        version: 10.0.0(@babel/core@8.0.1)
       browserify:
         specifier: ^17.0.0
         version: 17.0.1
@@ -1029,12 +1026,6 @@ packages:
     engines: {node: ^20.19.0 || >=22.12.0}
     peerDependencies:
       '@babel/core': ^7.4.0 || ^8.0.0
-
-  babelify@10.0.0:
-    resolution: {integrity: sha512-X40FaxyH7t3X+JFAKvb1H9wooWKLRCi8pg3m8poqtdZaIng+bjzp9RvKQCvRjF9isHiPkXspbbXT/zwXLtwgwg==}
-    engines: {node: '>=6.9.0'}
-    peerDependencies:
-      '@babel/core': ^7.0.0
 
   balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
@@ -4709,10 +4700,6 @@ snapshots:
       '@babel/core': 8.0.1
       '@babel/helper-define-polyfill-provider': 1.0.0(@babel/core@8.0.1)
       core-js-compat: 3.49.0
-
-  babelify@10.0.0(@babel/core@8.0.1):
-    dependencies:
-      '@babel/core': 8.0.1
 
   balanced-match@1.0.2: {}
 

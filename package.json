@@ -106,7 +106,6 @@
     "@types/chai": "^5.0.0",
     "@types/mocha": "^10.0.0",
     "@types/node": "^24.12.4",
-    "babelify": "^10.0.0",
     "browserify": "^17.0.0",
     "chai": "^4.3.7",
     "chai-datetime": "^1.8.1",
