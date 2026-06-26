@@ -54,13 +54,5 @@
     "arrow-body-style": ["off"],
     "grouped-accessor-pairs": ["warn"],
     "no-promise-executor-return": ["warn"]
-  },
-  "overrides": [
-    {
-      "files": ["gruntfile.js"],
-      "rules": {
-        "import/no-extraneous-dependencies": ["error", {"devDependencies": true}]
-      }
-    }
-  ]
+  }
 }
