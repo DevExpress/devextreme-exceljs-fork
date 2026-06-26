@@ -6,6 +6,12 @@
       "matchPackageNames": ["path-to-regexp"],
       "matchUpdateTypes": ["minor", "major"],
       "enabled": false
+    },
+    {
+      "description": "chai v5+ is ESM-only and breaks the CommonJS Mocha test setup (spec/config/setup.js uses require). Stay on v4 until the test stack is migrated to ESM.",
+      "matchPackageNames": ["chai"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
     }
   ]
 }
