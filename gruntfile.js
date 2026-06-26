@@ -1,6 +1,48 @@
 'use strict';
 
+const path = require('path');
+const {Transform} = require('stream');
+const babel = require('@babel/core');
+
 const pkg = require('./package.json');
+
+// Browserify transform that transpiles sources and dependencies with Babel.
+// Replaces the unmaintained `babelify` package, which is incompatible with
+// Babel 8 (it calls the now callback-only `loadPartialConfig` synchronously).
+function babelTransform(filename) {
+  if (!babel.DEFAULT_EXTENSIONS.includes(path.extname(filename))) {
+    return new Transform({transform: (chunk, enc, cb) => cb(null, chunk)});
+  }
+
+  const chunks = [];
+  return new Transform({
+    transform(chunk, enc, cb) {
+      chunks.push(chunk);
+      cb();
+    },
+    flush(cb) {
+      const code = Buffer.concat(chunks).toString();
+      babel.transform(
+        code,
+        {
+          filename,
+          presets: ['@babel/preset-env'],
+          // core-js should not be transpiled
+          // See https://github.com/zloirock/core-js/issues/514
+          ignore: [/node_modules[\\/]core-js/],
+          sourceMaps: 'inline',
+        },
+        (err, result) => {
+          if (err) {
+            cb(err);
+            return;
+          }
+          cb(null, result ? result.code : code);
+        }
+      );
+    },
+  });
+}
 
 /* eslint-disable max-len */
 const preamble = `/*!
@@ -39,17 +81,8 @@ module.exports = function(grunt) {
       options: {
         banner: preamble,
         transform: [
-          [
-            'babelify',
-            {
-              // enable babel transpile for node_modules
-              global: true,
-              presets: ['@babel/preset-env'],
-              // core-js should not be transpiled
-              // See https://github.com/zloirock/core-js/issues/514
-              ignore: [/node_modules[\\/]core-js/],
-            },
-          ],
+          // global: true enables transpile for node_modules too
+          [babelTransform, {global: true}],
         ],
         browserifyOptions: {
           // enable source map for browserify
@@ -138,7 +171,6 @@ module.exports = function(grunt) {
         ],
       },
     },
-
   });
 
   grunt.registerTask('build', ['babel:dist', 'browserify', 'terser', 'exorcise', 'copy']);
