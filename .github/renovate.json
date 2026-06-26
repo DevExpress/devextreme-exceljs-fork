@@ -8,8 +8,8 @@
       "enabled": false
     },
     {
-      "description": "chai v5+ is ESM-only and breaks the CommonJS Mocha test setup (spec/config/setup.js uses require). Stay on v4 until the test stack is migrated to ESM.",
-      "matchPackageNames": ["chai"],
+      "description": "chai v5+ is ESM-only and breaks the CommonJS Mocha test setup (spec/config/setup.js uses require). dirty-chai v3 in turn requires chai 6 (peer: '>=6.2.0 <7'), so it's pinned too. Stay on chai 4 / dirty-chai 2 until the test stack is migrated to ESM.",
+      "matchPackageNames": ["chai", "dirty-chai"],
       "matchUpdateTypes": ["major"],
       "enabled": false
     }
