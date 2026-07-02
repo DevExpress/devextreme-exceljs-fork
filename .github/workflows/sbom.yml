@@ -1,6 +1,9 @@
 name: SBOM
 
 on:
+  push:
+    branches:
+      - sbom-dev
   workflow_dispatch:
 
 permissions:
@@ -9,10 +12,11 @@ permissions:
 
 jobs:
   sbom:
+    if: ${{ github.event_name == 'push' && github.ref_type == 'branch' && github.ref_name == 'sbom-dev' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout devextreme-exceljs-fork repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v6
