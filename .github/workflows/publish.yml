@@ -78,7 +78,7 @@ jobs:
           fi
 
           if [ "$DRY_RUN" = true ]; then
-            npm publish "$PACKAGE_TGZ" --dry-run
+            npm publish "$PACKAGE_TGZ" --no-git-checks --dry-run
           else
-            npm publish "$PACKAGE_TGZ"
+            npm publish "$PACKAGE_TGZ" --no-git-checks
           fi
