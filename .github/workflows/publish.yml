@@ -107,7 +107,7 @@ jobs:
           fi
 
           if [ "$DRY_RUN" = true ]; then
-            pnpm publish "$PACKAGE_TGZ" --provenance --dry-run
+            pnpm publish "$PACKAGE_TGZ" --provenance --no-git-checks --dry-run
           else
-            pnpm publish "$PACKAGE_TGZ" --provenance
+            pnpm publish "$PACKAGE_TGZ" --provenance --no-git-checks
           fi
