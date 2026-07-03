@@ -53,6 +53,9 @@ spec/integration/data/gold
 /spec/manual/public/exceljs.js
 /spec/manual/public/exceljs.min.js
 
+# tgz files
+*.tgz
+
 # optional switch off tests
 .disable-test-*
 
