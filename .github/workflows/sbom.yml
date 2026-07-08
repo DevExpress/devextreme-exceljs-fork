@@ -3,6 +3,7 @@ name: SBOM
 on:
   push:
     branches:
+      - master
       - sbom-dev
   workflow_dispatch:
 
@@ -12,7 +13,7 @@ permissions:
 
 jobs:
   sbom:
-    if: ${{ github.event_name == 'push' && github.ref_type == 'branch' && github.ref_name == 'sbom-dev' }}
+    if: ${{ github.ref_name == 'sbom-dev' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout devextreme-exceljs-fork repository
@@ -56,10 +57,11 @@ jobs:
 
       - name: Publish SBOM to npm.pkg.github.com
         run: |
+          version="$(pnpm pkg get version | tr -d '"')-${GITHUB_SHA:0:7}"
           mkdir -p tools/make-sbom/pack && cp tools/make-sbom/dist/devextreme-exceljs-fork.cdx.json tools/make-sbom/pack/
-          jq -n --arg v "$(pnpm pkg get version | tr -d '\"')" '{name:"@devexpress/devextreme-exceljs-fork-sbom",version:$v}' > tools/make-sbom/pack/package.json
+          jq -n --arg v "$version" '{name:"@devexpress/devextreme-exceljs-fork-sbom",version:$v}' > tools/make-sbom/pack/package.json
           cd tools/make-sbom/pack
-          pnpm publish --registry https://npm.pkg.github.com --no-git-checks
+          pnpm publish --registry https://npm.pkg.github.com --no-git-checks --tag preview
 
       - name: Publish to NPM (dry run)
         run: |
