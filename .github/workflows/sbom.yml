@@ -71,7 +71,7 @@ jobs:
           pnpm publish --registry https://npm.pkg.github.com --no-git-checks
 
   publish:
-    needs: build
+    needs: sbom
     runs-on: ubuntu-latest
     steps:
       - name: Checkout devextreme-exceljs-fork repository
