@@ -43,6 +43,13 @@ jobs:
           package_tgz=$(pnpm pack --json | jq -er 'if type=="array" then .[0].filename else .filename end')
           echo "PACKAGE_TGZ=$(realpath "$package_tgz")" >> "$GITHUB_ENV"
 
+      - name: Upload package artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: package-tgz
+          path: ${{ env.PACKAGE_TGZ }}
+          if-no-files-found: error
+
       - name: Build SBOM
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -61,8 +68,32 @@ jobs:
           mkdir -p tools/make-sbom/pack && cp tools/make-sbom/dist/devextreme-exceljs-fork.cdx.json tools/make-sbom/pack/
           jq -n --arg v "$version" '{name:"@devexpress/devextreme-exceljs-fork-sbom",version:$v}' > tools/make-sbom/pack/package.json
           cd tools/make-sbom/pack
-          pnpm publish --registry https://npm.pkg.github.com --no-git-checks --tag preview
+          pnpm publish --registry https://npm.pkg.github.com --no-git-checks
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout devextreme-exceljs-fork repository
+        uses: actions/checkout@v7
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.node-version'
+          cache: 'pnpm'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Download package artifact
+        uses: actions/download-artifact@v7
+        with:
+          name: package-tgz
+          path: package-tgz
 
       - name: Publish to NPM (dry run)
         run: |
-          pnpm publish "$PACKAGE_TGZ" --no-git-checks --dry-run
+          package_tgz=$(ls package-tgz/*.tgz)
+          pnpm publish "$package_tgz" --provenance --no-git-checks --dry-run
