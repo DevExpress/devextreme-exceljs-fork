@@ -64,7 +64,7 @@ jobs:
 
       - name: Publish SBOM to npm.pkg.github.com
         run: |
-          version="$(pnpm pkg get version | tr -d '"')"
+          version="$(pnpm pkg get version | tr -d '"')-${GITHUB_SHA:0:7}"
           mkdir -p tools/make-sbom/pack && cp tools/make-sbom/dist/devextreme-exceljs-fork.cdx.json tools/make-sbom/pack/
           jq -n --arg v "$version" '{name:"@devexpress/devextreme-exceljs-fork-sbom",version:$v}' > tools/make-sbom/pack/package.json
           cd tools/make-sbom/pack
