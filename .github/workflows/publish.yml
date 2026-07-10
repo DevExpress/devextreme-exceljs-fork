@@ -15,11 +15,6 @@ on:
 
 permissions: {}
 
-permissions:
-  id-token: write  # Required for OIDC (Trusted Publishing)
-  contents: read
-  packages: write
-
 jobs:
   build:
     runs-on: ubuntu-slim
