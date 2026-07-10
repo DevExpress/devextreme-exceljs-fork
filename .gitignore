@@ -56,6 +56,10 @@ spec/integration/data/gold
 # tgz files
 *.tgz
 
+# sbom files
+tools/make-sbom/dist
+tools/make-sbom/pack
+
 # optional switch off tests
 .disable-test-*
 

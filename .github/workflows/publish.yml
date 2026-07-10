@@ -13,14 +13,14 @@ on:
         default: false
         description: Dry run
 
-permissions:
-  id-token: write  # Required for OIDC (Trusted Publishing)
-  contents: read
+permissions: {}
 
 jobs:
-  publish:
-    runs-on: ubuntu-latest
-    environment: npmjs
+  build:
+    runs-on: ubuntu-slim
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Checkout devextreme-exceljs-fork repository
         uses: actions/checkout@v7
@@ -49,7 +49,37 @@ jobs:
       - name: Pack package
         run: |
           package_tgz=$(pnpm pack --json | jq -er 'if type=="array" then .[0].filename else .filename end')
-          echo "PACKAGE_TGZ=$package_tgz" >> "$GITHUB_ENV"
+          echo "PACKAGE_TGZ=$(realpath "$package_tgz")" >> "$GITHUB_ENV"
+
+      - name: Upload package
+        uses: actions/upload-artifact@v7
+        with:
+          name: package
+          path: ${{ env.PACKAGE_TGZ }}
+          if-no-files-found: error
+
+      - name: Set GitHub Packages auth
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: pnpm set //npm.pkg.github.com/:_authToken="$NODE_AUTH_TOKEN"
+
+      - name: Build SBOM
+        run: |
+          cd tools/make-sbom && pnpm install --frozen-lockfile
+          pnpm dx-make-sbom ../../ dist/ "devextreme-exceljs-fork($PACKAGE_TGZ)"
+
+      - name: Validate SBOM
+        uses: DevExpress/github-actions/validate-sbom@5034a6d5e0fd18fc2826ed20a5140f9c83b8994f
+        with:
+          input-file: tools/make-sbom/dist/devextreme-exceljs-fork.cdx.json
+
+      - name: Publish SBOM to GitHub Packages
+        run: |
+          version="$(pnpm pkg get version | tr -d '"')"
+          mkdir -p tools/make-sbom/pack && cp tools/make-sbom/dist/devextreme-exceljs-fork.cdx.json tools/make-sbom/pack/
+          jq -n --arg v "$version" '{name:"@devexpress/devextreme-exceljs-fork-sbom",version:$v}' > tools/make-sbom/pack/package.json
+          cd tools/make-sbom/pack
+          pnpm publish --registry https://npm.pkg.github.com --no-git-checks
 
       - name: Verify build artifacts
         run: |
@@ -68,17 +98,47 @@ jobs:
           fi
           echo "All build artifacts verified successfully"
 
+  publish:
+    needs: build
+    runs-on: ubuntu-slim
+    environment: npmjs
+    permissions:
+      id-token: write  # Required for OIDC (Trusted Publishing)
+      contents: read
+    steps:
+      - name: Checkout devextreme-exceljs-fork repository
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.version }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: '.node-version'
+          cache: 'pnpm'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Download package
+        uses: actions/download-artifact@v7
+        with:
+          name: package
+          path: package
+
       - name: Publish to NPM
         env:
           DRY_RUN: "${{ inputs.dry-run }}"
         run: |
-          if [ -z "$PACKAGE_TGZ" ] || [ ! -f "$PACKAGE_TGZ" ]; then
-            echo "Error: packed tgz file not found: $PACKAGE_TGZ"
+          package_tgz=$(ls package/*.tgz)
+          if [ -z "$package_tgz" ] || [ ! -f "$package_tgz" ]; then
+            echo "Error: packed tgz file not found"
             exit 1
           fi
 
           if [ "$DRY_RUN" = true ]; then
-            pnpm publish "$PACKAGE_TGZ" --provenance --no-git-checks --dry-run
+            pnpm publish "$package_tgz" --provenance --no-git-checks --dry-run
           else
-            pnpm publish "$PACKAGE_TGZ" --provenance --no-git-checks
+            pnpm publish "$package_tgz" --provenance --no-git-checks
           fi
