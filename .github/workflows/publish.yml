@@ -13,6 +13,8 @@ on:
         default: false
         description: Dry run
 
+permissions: {}
+
 permissions:
   id-token: write  # Required for OIDC (Trusted Publishing)
   contents: read
@@ -21,6 +23,9 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Checkout devextreme-exceljs-fork repository
         uses: actions/checkout@v7
@@ -58,19 +63,22 @@ jobs:
           path: ${{ env.PACKAGE_TGZ }}
           if-no-files-found: error
 
-      - name: Build SBOM
+      - name: Set GitHub Packages auth
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: pnpm set //npm.pkg.github.com/:_authToken="$NODE_AUTH_TOKEN"
+
+      - name: Build SBOM
         run: |
-          pnpm set //npm.pkg.github.com/:_authToken="$NODE_AUTH_TOKEN"
-          cd tools/make-sbom && pnpm install --frozen-lockfile && pnpm dx-make-sbom ../../ dist/ "devextreme-exceljs-fork($PACKAGE_TGZ)"
+          cd tools/make-sbom && pnpm install --frozen-lockfile
+          pnpm dx-make-sbom ../../ dist/ "devextreme-exceljs-fork($PACKAGE_TGZ)"
 
       - name: Validate SBOM
         uses: DevExpress/github-actions/validate-sbom@5034a6d5e0fd18fc2826ed20a5140f9c83b8994f
         with:
           input-file: tools/make-sbom/dist/devextreme-exceljs-fork.cdx.json
 
-      - name: Publish SBOM to npm.pkg.github.com
+      - name: Publish SBOM to GitHub Packages
         run: |
           version="$(pnpm pkg get version | tr -d '"')"
           mkdir -p tools/make-sbom/pack && cp tools/make-sbom/dist/devextreme-exceljs-fork.cdx.json tools/make-sbom/pack/
@@ -99,6 +107,9 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     environment: npmjs
+    permissions:
+      id-token: write  # Required for OIDC (Trusted Publishing)
+      contents: read
     steps:
       - name: Checkout devextreme-exceljs-fork repository
         uses: actions/checkout@v7
