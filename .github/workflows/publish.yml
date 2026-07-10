@@ -65,7 +65,8 @@ jobs:
 
       - name: Build SBOM
         run: |
-          cd tools/make-sbom && pnpm install --frozen-lockfile
+          cd tools/make-sbom
+          pnpm install --frozen-lockfile
           pnpm dx-make-sbom ../../ dist/ "devextreme-exceljs-fork($PACKAGE_TGZ)"
 
       - name: Validate SBOM
@@ -77,9 +78,9 @@ jobs:
         run: |
           version="$(pnpm pkg get version | tr -d '"')"
           mkdir -p tools/make-sbom/pack && cp tools/make-sbom/dist/devextreme-exceljs-fork.cdx.json tools/make-sbom/pack/
-          jq -n --arg v "$version" '{name:"@devexpress/devextreme-exceljs-fork-sbom",version:$v}' > tools/make-sbom/pack/package.json
+          jq -n --arg v "$version" '{name:"@devexpress/devextreme-exceljs-fork-sbom",version:$v,publishConfig:{registry:"https://npm.pkg.github.com"}}' > tools/make-sbom/pack/package.json
           cd tools/make-sbom/pack
-          pnpm publish --registry https://npm.pkg.github.com --no-git-checks
+          pnpm publish --no-git-checks
 
       - name: Verify build artifacts
         run: |
