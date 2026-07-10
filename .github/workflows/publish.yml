@@ -35,7 +35,6 @@ jobs:
         with:
           node-version-file: '.node-version'
           cache: 'pnpm'
-          registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -59,13 +58,14 @@ jobs:
           if-no-files-found: error
 
       - name: Set GitHub Packages auth
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: pnpm set //npm.pkg.github.com/:_authToken="$NODE_AUTH_TOKEN"
+        run: pnpm set //npm.pkg.github.com/:_authToken='${NODE_AUTH_TOKEN}'
 
       - name: Build SBOM
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          cd tools/make-sbom && pnpm install --frozen-lockfile
+          cd tools/make-sbom
+          pnpm install --frozen-lockfile
           pnpm dx-make-sbom ../../ dist/ "devextreme-exceljs-fork($PACKAGE_TGZ)"
 
       - name: Validate SBOM
@@ -74,12 +74,14 @@ jobs:
           input-file: tools/make-sbom/dist/devextreme-exceljs-fork.cdx.json
 
       - name: Publish SBOM to GitHub Packages
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           version="$(pnpm pkg get version | tr -d '"')"
           mkdir -p tools/make-sbom/pack && cp tools/make-sbom/dist/devextreme-exceljs-fork.cdx.json tools/make-sbom/pack/
-          jq -n --arg v "$version" '{name:"@devexpress/devextreme-exceljs-fork-sbom",version:$v}' > tools/make-sbom/pack/package.json
+          jq -n --arg v "$version" '{name:"@devexpress/devextreme-exceljs-fork-sbom",version:$v,publishConfig:{registry:"https://npm.pkg.github.com"}}' > tools/make-sbom/pack/package.json
           cd tools/make-sbom/pack
-          pnpm publish --registry https://npm.pkg.github.com --no-git-checks
+          pnpm publish --no-git-checks
 
       - name: Verify build artifacts
         run: |
