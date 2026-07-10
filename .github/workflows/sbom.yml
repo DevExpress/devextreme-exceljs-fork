@@ -1,31 +1,23 @@
-name: Publish
+name: SBOM
 
 on:
+  push:
+    branches:
+      - master
+      - sbom-dev-1
   workflow_dispatch:
-    inputs:
-      version:
-        type: string
-        required: true
-        description: Publishing version (tag name)
-      dry-run:
-        type: boolean
-        required: false
-        default: false
-        description: Dry run
 
-permissions: {}
+permissions:
+  contents: read
+  packages: write
 
 jobs:
-  build:
+  sbom:
+    if: ${{ github.ref_name == 'sbom-dev-1' }}
     runs-on: ubuntu-slim
-    permissions:
-      contents: read
-      packages: write
     steps:
       - name: Checkout devextreme-exceljs-fork repository
         uses: actions/checkout@v7
-        with:
-          ref: ${{ inputs.version }}
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v6
@@ -79,35 +71,12 @@ jobs:
           cd tools/make-sbom/pack
           pnpm publish --no-git-checks
 
-      - name: Verify build artifacts
-        run: |
-          echo "Verifying build artifacts..."
-          if [ ! -d "dist" ]; then
-            echo "Error: dist directory not found"
-            exit 1
-          fi
-          if [ ! -f "dist/dx-exceljs-fork.min.js" ]; then
-            echo "Error: minified bundle not found"
-            exit 1
-          fi
-          if [ ! -f "dist/dx-exceljs-fork.js" ]; then
-            echo "Error: main bundle not found"
-            exit 1
-          fi
-          echo "All build artifacts verified successfully"
-
   publish:
-    needs: build
+    needs: sbom
     runs-on: ubuntu-slim
-    environment: npmjs
-    permissions:
-      id-token: write  # Required for OIDC (Trusted Publishing)
-      contents: read
     steps:
       - name: Checkout devextreme-exceljs-fork repository
         uses: actions/checkout@v7
-        with:
-          ref: ${{ inputs.version }}
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v6
@@ -125,18 +94,7 @@ jobs:
           name: package
           path: package
 
-      - name: Publish to NPM
-        env:
-          DRY_RUN: "${{ inputs.dry-run }}"
+      - name: Publish to NPM (dry run)
         run: |
           package_tgz=$(ls package/*.tgz)
-          if [ -z "$package_tgz" ] || [ ! -f "$package_tgz" ]; then
-            echo "Error: packed tgz file not found"
-            exit 1
-          fi
-
-          if [ "$DRY_RUN" = true ]; then
-            pnpm publish "$package_tgz" --provenance --no-git-checks --dry-run
-          else
-            pnpm publish "$package_tgz" --provenance --no-git-checks
-          fi
+          pnpm publish "$package_tgz" --provenance --no-git-checks --dry-run
