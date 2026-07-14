@@ -1,2 +1,4 @@
 minimumReleaseAgeExclude:
   - '@devexpress/sbom-toolkit'
+overrides:
+  tar@<=7.5.15: ^7.5.16
