@@ -1,6 +1,6 @@
 const {PassThrough} = require('readable-stream');
 const express = require('express');
-const got = require('got');
+const got = require('got').default;
 const testutils = require('../utils/index');
 
 const Excel = verquire('exceljs');
