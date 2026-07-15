@@ -1,3 +1,13 @@
+// NOTE on ESLint v10 compatibility:
+// eslint-config-airbnb-base@15 (its final release; eslintrc-only, declares eslint
+// peer <=8) and eslint-plugin-import@2.32.0 (declares eslint peer <=9) predate flat
+// config, so pnpm reports unmet-peer warnings against eslint@10. This is expected
+// and cosmetic: FlatCompat is the sanctioned bridge for running legacy shareable
+// configs under flat-config ESLint, and every airbnb/import rule has been verified
+// to load and run correctly on eslint@10.6.x. The durable fix is to move off the
+// abandoned airbnb-base (e.g. eslint-plugin-import -> import-x + a maintained flat
+// base); that is a behaviour-changing change tracked as a separate follow-up, kept
+// out of this migration which only restores the pre-existing lint behaviour.
 const {FlatCompat} = require('@eslint/eslintrc');
 const js = require('@eslint/js');
 
