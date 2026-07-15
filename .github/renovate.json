@@ -12,6 +12,12 @@
       "matchPackageNames": ["chai", "dirty-chai"],
       "matchUpdateTypes": ["major"],
       "enabled": false
+    },
+    {
+      "description": "js-yaml is a transitive-only override kept for the merge-DoS hardening, backported to v4 in 4.3.0. Consumers (mocha, grunt) don't support v5's breaking rewrite (removed safeLoad/safeDump and the Type API). Stay on v4.",
+      "matchPackageNames": ["js-yaml"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
     }
   ]
 }
