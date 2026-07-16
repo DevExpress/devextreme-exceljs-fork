@@ -13,6 +13,7 @@ overrides:
   "@babel/plugin-transform-modules-systemjs": ^8.0.0
   diff: ^9.0.0
   js-yaml: ^4.3.0
+  websocket-driver@<0.7.5: ^0.7.5
 
 allowBuilds:
   core-js: true
