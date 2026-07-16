@@ -45,7 +45,7 @@
     "test:typescript": "mocha -r ts-node/register spec/typescript/**/*.spec.ts",
     "type-check": "tsc index.d.ts",
     "clean-build": "pnpm run clean && pnpm run build",
-    "lint": "eslint --format node_modules/eslint-friendly-formatter .",
+    "lint": "eslint --format node_modules/eslint-friendly-formatter/index.js .",
     "lint:fix": "prettier-eslint --write $(pwd)'/**/*.js'",
     "lint:staged": "lint-staged",
     "clean": "rm -rf build/ && rm -rf dist",
@@ -60,7 +60,7 @@
   "lint-staged": {
     "*.js": [
       "prettier-eslint --write",
-      "eslint --format node_modules/eslint-friendly-formatter"
+      "eslint --format node_modules/eslint-friendly-formatter/index.js"
     ]
   },
   "keywords": [
@@ -102,6 +102,8 @@
     "@babel/cli": "^8.0.0",
     "@babel/core": "^8.0.0",
     "@babel/preset-env": "^8.0.0",
+    "@eslint/eslintrc": "^3.3.6",
+    "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.58.2",
     "@types/chai": "^5.0.0",
     "@types/mocha": "^10.0.0",
@@ -130,8 +132,9 @@
     "husky": "^9.1.7",
     "lint-staged": "^10.2.13",
     "mocha": "^11.7.1",
-    "prettier-eslint": "^16.4.2",
-    "prettier-eslint-cli": "^8.0.1",
+    "prettier": "^3.8.3",
+    "prettier-eslint": "^17.1.1",
+    "prettier-eslint-cli": "^9.2.1",
     "regenerator-runtime": "^0.14.0",
     "sax": "^1.2.4",
     "ts-node": "^8.10.2",
