@@ -1,13 +1,17 @@
 const {PassThrough} = require('readable-stream');
 const express = require('express');
-const got = require('got');
 const testutils = require('../utils/index');
 
 const Excel = verquire('exceljs');
 
 describe('Express', () => {
   let server;
-  before(() => {
+  let got;
+  before(async () => {
+    // got is ESM-only since v12; load it via dynamic import so this
+    // CommonJS test stays portable across Node/got versions.
+    ({default: got} = await import('got'));
+
     const app = express();
     app.get('/workbook', (req, res) => {
       const wb = testutils.createTestBook(new Excel.Workbook(), 'xlsx');
