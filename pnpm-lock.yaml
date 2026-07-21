@@ -50,9 +50,6 @@ importers:
         specifier: ^0.12.3
         version: 0.12.5
     devDependencies:
-      '@babel/cli':
-        specifier: ^8.0.0
-        version: 8.0.1(@babel/core@8.0.1)
       '@babel/core':
         specifier: ^8.0.0
         version: 8.0.1
@@ -172,13 +169,6 @@ importers:
         version: 5.9.3
 
 packages:
-
-  '@babel/cli@8.0.1':
-    resolution: {integrity: sha512-cttmeKZGho8XpXNz3nvGMjEnpDW5qkPVGNW2buav2byKxArJnBROsJrLA7CioPQhjzsZ26aZRqg+Gvpk+FHGEg==}
-    engines: {node: ^22.18.0 || >=24.11.0}
-    hasBin: true
-    peerDependencies:
-      '@babel/core': ^8.0.0
 
   '@babel/code-frame@7.29.7':
     resolution: {integrity: sha512-Aup7aUOfpbAUg2ROOJN6Iw5f9DMBlzu0mIkm/malLQFN/YQgO48wCj0Kxa3sEHJvPVFg7siR+qRInwXd2qhQKw==}
@@ -1333,10 +1323,6 @@ packages:
 
   combine-source-map@0.8.0:
     resolution: {integrity: sha512-UlxQ9Vw0b/Bt/KYwCFqdEwsQ1eL8d1gibiFb7lxQJFdvTgc2hIZi6ugsg+kyhzhPV+QEpUiEIwInIAIrgoEkrg==}
-
-  commander@14.0.3:
-    resolution: {integrity: sha512-H+y0Jo/T1RZ9qPP4Eh1pkcQcLRglraJaSLoyOtHxu6AapkjWVCy2Sit1QQ4x3Dng8qDlSsZEet7g5Pq06MvTgw==}
-    engines: {node: '>=20'}
 
   commander@2.20.3:
     resolution: {integrity: sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==}
@@ -3265,10 +3251,6 @@ packages:
   simple-concat@1.0.1:
     resolution: {integrity: sha512-cSFtAPtRhljv69IK0hTVZQ+OfE9nePi/rtJmw5UjHeVyVroEqJXP1sFztKUy1qU+xvz3u/sfYJLa947b7nAN2Q==}
 
-  slash@5.1.0:
-    resolution: {integrity: sha512-ZA6oR3T/pEyuqwMgAKT0/hAv8oAXckzbkmR0UkUosQ+Mc4RxGoJkRmwHgHufaenlyAgE1Mxgpdcrf75y6XcnDg==}
-    engines: {node: '>=14.16'}
-
   slice-ansi@3.0.0:
     resolution: {integrity: sha512-pSyv7bSTC7ig9Dcgbw9AuRNUb5k5V6oDudjZoMBSr13qpLBG7tB+zgCkARjq7xIUgdz5P1Qe8u+rSGdouOOIyQ==}
     engines: {node: '>=8'}
@@ -3761,17 +3743,6 @@ packages:
     engines: {node: '>= 14'}
 
 snapshots:
-
-  '@babel/cli@8.0.1(@babel/core@8.0.1)':
-    dependencies:
-      '@babel/core': 8.0.1
-      '@jridgewell/trace-mapping': 0.3.31
-      commander: 14.0.3
-      convert-source-map: 2.0.0
-      glob: 13.0.6
-      slash: 5.1.0
-    optionalDependencies:
-      chokidar: 3.6.0
 
   '@babel/code-frame@7.29.7':
     dependencies:
@@ -5130,8 +5101,6 @@ snapshots:
       inline-source-map: 0.6.3
       lodash.memoize: 3.0.4
       source-map: 0.5.7
-
-  commander@14.0.3: {}
 
   commander@2.20.3: {}
 
@@ -7316,8 +7285,6 @@ snapshots:
   signal-exit@3.0.7: {}
 
   simple-concat@1.0.1: {}
-
-  slash@5.1.0: {}
 
   slice-ansi@3.0.0:
     dependencies:
