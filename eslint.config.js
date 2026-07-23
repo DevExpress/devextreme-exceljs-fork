@@ -32,7 +32,7 @@ module.exports = [
       ecmaVersion: 2022,
       sourceType: 'script',
     },
-    extends: ['airbnb-base', 'prettier', 'plugin:n/recommended'],
+    extends: ['airbnb-base', 'plugin:n/recommended'],
     env: {
       es6: true,
       mocha: true,
@@ -122,6 +122,16 @@ module.exports = [
   },
 
   {
+    files: ['spec/browser/**/*.js'],
+    languageOptions: {
+      globals: {
+        window: 'readonly',
+        ExcelJS: 'readonly',
+      },
+    },
+  },
+
+  {
     files: ['test/**/*.js'],
     rules: {
       'no-new': ['off'],
@@ -133,7 +143,7 @@ module.exports = [
   },
 
   {
-    files: ['eslint.config.js'],
+    files: ['eslint.config.js', 'playwright.config.js'],
     rules: {
       'import/no-extraneous-dependencies': ['error', {devDependencies: true}],
     },
