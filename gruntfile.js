@@ -2,7 +2,7 @@
 
 const path = require('path');
 const {Transform} = require('stream');
-// eslint-disable-next-line import/no-extraneous-dependencies
+// eslint-disable-next-line import-x/no-extraneous-dependencies
 const babel = require('@babel/core');
 
 const pkg = require('./package.json');

@@ -1,20 +1,7 @@
-// NOTE on ESLint v10 compatibility:
-// eslint-config-airbnb-base@15 (its final release; eslintrc-only, declares eslint
-// peer <=8) and eslint-plugin-import@2.32.0 (declares eslint peer <=9) predate flat
-// config, so pnpm reports unmet-peer warnings against eslint@10. This is expected
-// and cosmetic: FlatCompat is the sanctioned bridge for running legacy shareable
-// configs under flat-config ESLint, and every airbnb/import rule has been verified
-// to load and run correctly on eslint@10.6.x. The durable fix is to move off the
-// abandoned airbnb-base (e.g. eslint-plugin-import -> import-x + a maintained flat
-// base); that is a behaviour-changing change tracked as a separate follow-up, kept
-// out of this migration which only restores the pre-existing lint behaviour.
-const {FlatCompat} = require('@eslint/eslintrc');
 const js = require('@eslint/js');
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  recommendedConfig: js.configs.recommended,
-});
+const n = require('eslint-plugin-n');
+const importX = require('eslint-plugin-import-x');
+const globals = require('globals');
 
 module.exports = [
   {
@@ -27,16 +14,24 @@ module.exports = [
     },
   },
 
-  ...compat.config({
-    parserOptions: {
+  js.configs.recommended,
+  n.configs['flat/recommended-script'],
+
+  {
+    plugins: {
+      'import-x': importX,
+    },
+    languageOptions: {
       ecmaVersion: 2022,
       sourceType: 'script',
+      globals: {
+        ...globals.node,
+        ...globals.mocha,
+        ...globals.es2021,
+      },
     },
-    extends: ['airbnb-base', 'plugin:n/recommended'],
-    env: {
-      es6: true,
-      mocha: true,
-      node: true,
+    settings: {
+      'import-x/resolver-next': [importX.createNodeResolver()],
     },
     rules: {
       'arrow-parens': ['error', 'as-needed'],
@@ -63,6 +58,9 @@ module.exports = [
       'no-path-concat': ['off'],
       'no-plusplus': ['off'],
       'no-prototype-builtins': ['off'],
+      'no-redeclare': ['error', {builtinGlobals: false}],
+      'no-unassigned-vars': ['off'],
+      'no-useless-assignment': ['off'],
       'no-restricted-syntax': ['error', 'ForInStatement', 'LabeledStatement', 'WithStatement'],
       'no-return-assign': ['off'],
       'no-trailing-spaces': ['error', {skipBlankLines: true}],
@@ -84,8 +82,8 @@ module.exports = [
         {anonymous: 'never', named: 'never', asyncArrow: 'always'},
       ],
       strict: ['off'],
-      'import/extensions': ['off'],
-      'import/no-unresolved': ['warn'],
+      'import-x/extensions': ['off'],
+      'import-x/no-unresolved': ['warn'],
       'n/no-missing-require': ['warn'],
       'prefer-arrow-callback': ['warn'],
       radix: ['warn'],
@@ -93,7 +91,7 @@ module.exports = [
       'grouped-accessor-pairs': ['warn'],
       'no-promise-executor-return': ['warn'],
     },
-  }),
+  },
 
   {
     files: ['spec/**/*.js'],
@@ -145,7 +143,7 @@ module.exports = [
   {
     files: ['eslint.config.js', 'playwright.config.js'],
     rules: {
-      'import/no-extraneous-dependencies': ['error', {devDependencies: true}],
+      'import-x/no-extraneous-dependencies': ['error', {devDependencies: true}],
     },
   },
 ];
