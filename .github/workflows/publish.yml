@@ -68,10 +68,11 @@ jobs:
           rm -rf "$package_dir"
           mkdir -p "$package_dir"
           tar -xzf "$PACKAGE_TGZ" -C "$package_dir"
-          jq '.name = "@devexpress/devextreme-exceljs-fork" | .publishConfig = {registry:"https://npm.pkg.github.com"}' "$package_dir/package/package.json" > "$package_dir/package/package.json.tmp"
+          jq --arg name "@devexpress/devextreme-exceljs-fork" --arg registry "https://npm.pkg.github.com" '.name = $name | .publishConfig = ((.publishConfig // {}) + {registry:$registry})' "$package_dir/package/package.json" > "$package_dir/package/package.json.tmp"
           mv "$package_dir/package/package.json.tmp" "$package_dir/package/package.json"
-          cd "$package_dir/package"
-          pnpm publish --no-git-checks
+          github_package_tgz="$package_dir/github-package.tgz"
+          tar -czf "$github_package_tgz" -C "$package_dir" package
+          pnpm publish "$github_package_tgz" --no-git-checks
 
       - name: Build SBOM
         env:
