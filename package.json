@@ -96,7 +96,7 @@
     "readable-stream": "^3.6.0",
     "saxes": "^5.0.1",
     "tmp": "^0.2.7",
-    "unzipper": "^0.12.3"
+    "unzipper": "^0.12.5"
   },
   "devDependencies": {
     "@babel/core": "^8.0.0",
