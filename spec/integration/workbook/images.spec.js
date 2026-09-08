@@ -25,6 +25,11 @@ describe('Workbook', () => {
       expect(() => wb.addImage({buffer: Buffer.from('x'), extension: '../../evil'})).to.throw();
     });
 
+    it('exposes utils.safeJoin to confine user paths to a base directory (T1334951)', () => {
+      expect(ExcelJS.utils.safeJoin('/app/assets', 'logo.png')).to.equal('/app/assets/logo.png');
+      expect(() => ExcelJS.utils.safeJoin('/app/assets', '../../etc/passwd')).to.throw();
+    });
+
     it('stores background image', () => {
       const wb = new ExcelJS.Workbook();
       const ws = wb.addWorksheet('blort');

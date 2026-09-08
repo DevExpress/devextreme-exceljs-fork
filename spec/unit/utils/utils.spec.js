@@ -93,6 +93,10 @@ describe('utils', () => {
     it('throws on a Buffer filename', () => {
       expect(() => utils.assertSafeMediaPath(Buffer.from('../../etc/passwd'))).to.throw(/string/);
     });
+
+    it('throws on a filename with a null byte', () => {
+      expect(() => utils.assertSafeMediaPath('images/logo.png\0.txt')).to.throw(/null byte/);
+    });
   });
 
   describe('assertSafeMediaExtension', () => {
@@ -116,6 +120,20 @@ describe('utils', () => {
 
     it('throws on a non-string extension', () => {
       expect(() => utils.assertSafeMediaExtension(0)).to.throw(/string/);
+    });
+  });
+
+  describe('safeJoin', () => {
+    it('resolves a safe user path inside the base directory', () => {
+      expect(utils.safeJoin('/app/assets', 'logos/logo.png')).to.equal('/app/assets/logos/logo.png');
+    });
+
+    it('throws when the user path escapes the base directory', () => {
+      expect(() => utils.safeJoin('/app/assets', '../../etc/passwd')).to.throw(/outside the base directory/);
+    });
+
+    it('throws when the user path is an absolute path outside the base directory', () => {
+      expect(() => utils.safeJoin('/app/assets', '/etc/passwd')).to.throw(/outside the base directory/);
     });
   });
 });

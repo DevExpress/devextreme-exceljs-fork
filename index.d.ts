@@ -2039,3 +2039,12 @@ export namespace stream {
 		}
 	}
 }
+
+export namespace utils {
+	/**
+	 * Resolve `userPath` against `baseDir` and confirm the result stays inside `baseDir`.
+	 * Use instead of `path.join` when building an `addImage({ filename })` path from
+	 * user-influenced input. Throws if the resolved path escapes `baseDir`.
+	 */
+	function safeJoin(baseDir: string, userPath: string): string;
+}
