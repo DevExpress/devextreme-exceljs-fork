@@ -143,5 +143,13 @@ describe('utils', () => {
     it('throws when the user path is an absolute path outside the base directory', () => {
       expect(() => utils.safeJoin(base, path.resolve('/etc/passwd'))).to.throw(/outside the base directory/);
     });
+
+    it('throws on a null byte in the user path', () => {
+      expect(() => utils.safeJoin(base, 'logo\0.png')).to.throw(/null byte/);
+    });
+
+    it('throws on a non-string user path', () => {
+      expect(() => utils.safeJoin(base, 0)).to.throw(/must be strings/);
+    });
   });
 });
