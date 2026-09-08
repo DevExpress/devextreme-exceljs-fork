@@ -80,10 +80,18 @@ describe('utils', () => {
       });
     });
 
-    [undefined, null, 0].forEach(filename => {
-      it(`ignores a non-string filename '${filename}'`, () => {
+    [undefined, null].forEach(filename => {
+      it(`ignores an absent filename '${filename}'`, () => {
         expect(() => utils.assertSafeMediaPath(filename)).to.not.throw();
       });
+    });
+
+    it('throws on a numeric file descriptor', () => {
+      expect(() => utils.assertSafeMediaPath(0)).to.throw(/string/);
+    });
+
+    it('throws on a Buffer filename', () => {
+      expect(() => utils.assertSafeMediaPath(Buffer.from('../../etc/passwd'))).to.throw(/string/);
     });
   });
 });

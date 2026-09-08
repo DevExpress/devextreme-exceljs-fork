@@ -20,6 +20,12 @@ describe('WorkbookWriter', () => {
     expect(ws2.name).to.match(/sheet\d+/);
   });
 
+  it('rejects addImage with a path-traversal filename (T1334951)', () => {
+    const wb = new ExcelJS.stream.xlsx.WorkbookWriter();
+
+    expect(() => wb.addImage({filename: '../../etc/passwd', extension: 'png'})).to.throw(/\.\./);
+  });
+
   describe('Serialise', () => {
     it('xlsx file', () => {
       const options = {
