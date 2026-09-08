@@ -1773,7 +1773,8 @@ export class Workbook {
 	clearThemes(): void;
 
 	/**
-	 * Add Image to Workbook and return the id
+	 * Add Image to Workbook and return the id.
+	 * Throws if `filename` contains a path-traversal ("..") segment.
 	 */
 	addImage(img: Image): number;
 

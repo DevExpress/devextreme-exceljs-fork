@@ -66,4 +66,24 @@ describe('utils', () => {
       expect(dateConverted).to.deep.equal(myDate);
     });
   });
+
+  describe('assertSafeMediaPath', () => {
+    ['../../etc/passwd', 'images/../../secret', '..\\..\\secret', '..'].forEach(filename => {
+      it(`throws on a path-traversal filename '${filename}'`, () => {
+        expect(() => utils.assertSafeMediaPath(filename)).to.throw(/\.\./);
+      });
+    });
+
+    ['images/logo.png', '/abs/path/to/logo.png', 'C:\\images\\logo.png', 'a..b.png'].forEach(filename => {
+      it(`accepts a safe filename '${filename}'`, () => {
+        expect(() => utils.assertSafeMediaPath(filename)).to.not.throw();
+      });
+    });
+
+    [undefined, null, 0].forEach(filename => {
+      it(`ignores a non-string filename '${filename}'`, () => {
+        expect(() => utils.assertSafeMediaPath(filename)).to.not.throw();
+      });
+    });
+  });
 });

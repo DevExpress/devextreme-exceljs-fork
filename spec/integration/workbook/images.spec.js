@@ -1,9 +1,10 @@
 const fs = require('fs');
+const path = require('path');
 const {promisify} = require('util');
 
 const ExcelJS = verquire('exceljs');
 
-const IMAGE_FILENAME = `${__dirname}/../data/image.png`;
+const IMAGE_FILENAME = path.resolve(__dirname, '../data/image.png');
 const TEST_XLSX_FILE_NAME = './spec/out/wb.test.xlsx';
 const fsReadFileAsync = promisify(fs.readFile);
 
@@ -12,6 +13,12 @@ const fsReadFileAsync = promisify(fs.readFile);
 
 describe('Workbook', () => {
   describe('Images', () => {
+    it('rejects addImage with a path-traversal filename (T1334951)', () => {
+      const wb = new ExcelJS.Workbook();
+
+      expect(() => wb.addImage({filename: '../../etc/passwd', extension: 'png'})).to.throw(/\.\./);
+    });
+
     it('stores background image', () => {
       const wb = new ExcelJS.Workbook();
       const ws = wb.addWorksheet('blort');
