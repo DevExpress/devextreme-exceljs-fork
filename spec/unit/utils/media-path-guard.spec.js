@@ -8,7 +8,7 @@ describe('media-path-guard', () => {
       });
     });
 
-    ['images/logo.png', '/abs/path/to/logo.png', 'C:\\images\\logo.png', 'a..b.png'].forEach(filename => {
+    ['images/logo.png', '/abs/path/to/logo.png', 'C:\\images\\logo.png', 'a..b.png', 'foo:../bar'].forEach(filename => {
       it(`accepts a safe filename '${filename}'`, () => {
         expect(() => assertSafeMediaPath(filename)).to.not.throw();
       });
