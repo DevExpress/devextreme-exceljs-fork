@@ -94,4 +94,28 @@ describe('utils', () => {
       expect(() => utils.assertSafeMediaPath(Buffer.from('../../etc/passwd'))).to.throw(/string/);
     });
   });
+
+  describe('assertSafeMediaExtension', () => {
+    ['png/../../evil', 'png/evil', 'png\\evil', '..', 'a..b'].forEach(extension => {
+      it(`throws on an unsafe extension '${extension}'`, () => {
+        expect(() => utils.assertSafeMediaExtension(extension)).to.throw();
+      });
+    });
+
+    ['png', 'jpeg', 'gif'].forEach(extension => {
+      it(`accepts a safe extension '${extension}'`, () => {
+        expect(() => utils.assertSafeMediaExtension(extension)).to.not.throw();
+      });
+    });
+
+    [undefined, null].forEach(extension => {
+      it(`ignores an absent extension '${extension}'`, () => {
+        expect(() => utils.assertSafeMediaExtension(extension)).to.not.throw();
+      });
+    });
+
+    it('throws on a non-string extension', () => {
+      expect(() => utils.assertSafeMediaExtension(0)).to.throw(/string/);
+    });
+  });
 });

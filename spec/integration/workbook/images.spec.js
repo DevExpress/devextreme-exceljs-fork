@@ -19,6 +19,12 @@ describe('Workbook', () => {
       expect(() => wb.addImage({filename: '../../etc/passwd', extension: 'png'})).to.throw(/\.\./);
     });
 
+    it('rejects addImage with an unsafe extension (T1334951)', () => {
+      const wb = new ExcelJS.Workbook();
+
+      expect(() => wb.addImage({buffer: Buffer.from('x'), extension: '../../evil'})).to.throw();
+    });
+
     it('stores background image', () => {
       const wb = new ExcelJS.Workbook();
       const ws = wb.addWorksheet('blort');
