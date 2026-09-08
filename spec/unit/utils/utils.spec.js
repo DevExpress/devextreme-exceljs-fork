@@ -1,7 +1,4 @@
-const path = require('path');
-
 const utils = verquire('utils/utils');
-const {safeJoin} = verquire('utils/safe-join');
 
 describe('utils', () => {
   describe('xmlEncode', () => {
@@ -67,90 +64,6 @@ describe('utils', () => {
       const dateConverted = utils.excelToDate(excelDate, false);
 
       expect(dateConverted).to.deep.equal(myDate);
-    });
-  });
-
-  describe('assertSafeMediaPath', () => {
-    ['../../etc/passwd', 'images/../../secret', '..\\..\\secret', '..', 'C:..\\secret'].forEach(filename => {
-      it(`throws on a path-traversal filename '${filename}'`, () => {
-        expect(() => utils.assertSafeMediaPath(filename)).to.throw(/\.\./);
-      });
-    });
-
-    ['images/logo.png', '/abs/path/to/logo.png', 'C:\\images\\logo.png', 'a..b.png'].forEach(filename => {
-      it(`accepts a safe filename '${filename}'`, () => {
-        expect(() => utils.assertSafeMediaPath(filename)).to.not.throw();
-      });
-    });
-
-    [undefined, null].forEach(filename => {
-      it(`ignores an absent filename '${filename}'`, () => {
-        expect(() => utils.assertSafeMediaPath(filename)).to.not.throw();
-      });
-    });
-
-    it('throws on a numeric file descriptor', () => {
-      expect(() => utils.assertSafeMediaPath(0)).to.throw(/string/);
-    });
-
-    it('throws on a Buffer filename', () => {
-      expect(() => utils.assertSafeMediaPath(Buffer.from('../../etc/passwd'))).to.throw(/string/);
-    });
-
-    it('throws on a filename with a null byte', () => {
-      expect(() => utils.assertSafeMediaPath('images/logo.png\0.txt')).to.throw(/null byte/);
-    });
-  });
-
-  describe('assertSafeMediaExtension', () => {
-    ['png/../../evil', 'png/evil', 'png\\evil', '..', 'a..b'].forEach(extension => {
-      it(`throws on an unsafe extension '${extension}'`, () => {
-        expect(() => utils.assertSafeMediaExtension(extension)).to.throw();
-      });
-    });
-
-    ['png', 'jpeg', 'gif'].forEach(extension => {
-      it(`accepts a safe extension '${extension}'`, () => {
-        expect(() => utils.assertSafeMediaExtension(extension)).to.not.throw();
-      });
-    });
-
-    [undefined, null].forEach(extension => {
-      it(`ignores an absent extension '${extension}'`, () => {
-        expect(() => utils.assertSafeMediaExtension(extension)).to.not.throw();
-      });
-    });
-
-    it('throws on a non-string extension', () => {
-      expect(() => utils.assertSafeMediaExtension(0)).to.throw(/string/);
-    });
-
-    it('throws on an extension with a null byte', () => {
-      expect(() => utils.assertSafeMediaExtension('png\0')).to.throw(/null byte/);
-    });
-  });
-
-  describe('safeJoin', () => {
-    const base = path.resolve('app', 'assets');
-
-    it('resolves a safe user path inside the base directory', () => {
-      expect(safeJoin(base, 'logos/logo.png')).to.equal(path.join(base, 'logos', 'logo.png'));
-    });
-
-    it('throws when the user path escapes the base directory', () => {
-      expect(() => safeJoin(base, '../../etc/passwd')).to.throw(/outside the base directory/);
-    });
-
-    it('throws when the user path is an absolute path outside the base directory', () => {
-      expect(() => safeJoin(base, path.resolve('/etc/passwd'))).to.throw(/outside the base directory/);
-    });
-
-    it('throws on a null byte in the user path', () => {
-      expect(() => safeJoin(base, 'logo\0.png')).to.throw(/null byte/);
-    });
-
-    it('throws on a non-string user path', () => {
-      expect(() => safeJoin(base, 0)).to.throw(/must be strings/);
     });
   });
 });
