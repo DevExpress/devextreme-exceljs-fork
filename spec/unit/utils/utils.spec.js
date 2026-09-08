@@ -1,6 +1,7 @@
 const path = require('path');
 
 const utils = verquire('utils/utils');
+const {safeJoin} = verquire('utils/safe-join');
 
 describe('utils', () => {
   describe('xmlEncode', () => {
@@ -133,23 +134,23 @@ describe('utils', () => {
     const base = path.resolve('app', 'assets');
 
     it('resolves a safe user path inside the base directory', () => {
-      expect(utils.safeJoin(base, 'logos/logo.png')).to.equal(path.join(base, 'logos', 'logo.png'));
+      expect(safeJoin(base, 'logos/logo.png')).to.equal(path.join(base, 'logos', 'logo.png'));
     });
 
     it('throws when the user path escapes the base directory', () => {
-      expect(() => utils.safeJoin(base, '../../etc/passwd')).to.throw(/outside the base directory/);
+      expect(() => safeJoin(base, '../../etc/passwd')).to.throw(/outside the base directory/);
     });
 
     it('throws when the user path is an absolute path outside the base directory', () => {
-      expect(() => utils.safeJoin(base, path.resolve('/etc/passwd'))).to.throw(/outside the base directory/);
+      expect(() => safeJoin(base, path.resolve('/etc/passwd'))).to.throw(/outside the base directory/);
     });
 
     it('throws on a null byte in the user path', () => {
-      expect(() => utils.safeJoin(base, 'logo\0.png')).to.throw(/null byte/);
+      expect(() => safeJoin(base, 'logo\0.png')).to.throw(/null byte/);
     });
 
     it('throws on a non-string user path', () => {
-      expect(() => utils.safeJoin(base, 0)).to.throw(/must be strings/);
+      expect(() => safeJoin(base, 0)).to.throw(/must be strings/);
     });
   });
 });
