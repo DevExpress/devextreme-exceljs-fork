@@ -1,3 +1,5 @@
+const path = require('path');
+
 const utils = verquire('utils/utils');
 
 describe('utils', () => {
@@ -68,7 +70,7 @@ describe('utils', () => {
   });
 
   describe('assertSafeMediaPath', () => {
-    ['../../etc/passwd', 'images/../../secret', '..\\..\\secret', '..'].forEach(filename => {
+    ['../../etc/passwd', 'images/../../secret', '..\\..\\secret', '..', 'C:..\\secret'].forEach(filename => {
       it(`throws on a path-traversal filename '${filename}'`, () => {
         expect(() => utils.assertSafeMediaPath(filename)).to.throw(/\.\./);
       });
@@ -121,19 +123,25 @@ describe('utils', () => {
     it('throws on a non-string extension', () => {
       expect(() => utils.assertSafeMediaExtension(0)).to.throw(/string/);
     });
+
+    it('throws on an extension with a null byte', () => {
+      expect(() => utils.assertSafeMediaExtension('png\0')).to.throw(/null byte/);
+    });
   });
 
   describe('safeJoin', () => {
+    const base = path.resolve('app', 'assets');
+
     it('resolves a safe user path inside the base directory', () => {
-      expect(utils.safeJoin('/app/assets', 'logos/logo.png')).to.equal('/app/assets/logos/logo.png');
+      expect(utils.safeJoin(base, 'logos/logo.png')).to.equal(path.join(base, 'logos', 'logo.png'));
     });
 
     it('throws when the user path escapes the base directory', () => {
-      expect(() => utils.safeJoin('/app/assets', '../../etc/passwd')).to.throw(/outside the base directory/);
+      expect(() => utils.safeJoin(base, '../../etc/passwd')).to.throw(/outside the base directory/);
     });
 
     it('throws when the user path is an absolute path outside the base directory', () => {
-      expect(() => utils.safeJoin('/app/assets', '/etc/passwd')).to.throw(/outside the base directory/);
+      expect(() => utils.safeJoin(base, path.resolve('/etc/passwd'))).to.throw(/outside the base directory/);
     });
   });
 });
