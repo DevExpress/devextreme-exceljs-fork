@@ -2015,7 +2015,7 @@ const imageId2 = workbook.addImage({
 });
 ```
 
-An image `filename` cannot contain `..` segments - `addImage` rejects them to avoid reading files outside the intended directory. Reading an image from disk by `filename` applies to the Node.js build only, and there you should build the `filename` from user input with `ExcelJS.utils.safeJoin(baseDir, userInput)` instead of `path.join` to keep the resolved path inside a base directory (it throws when the path escapes `baseDir`).
+To block path traversal, `addImage` validates the image descriptor: the `filename` cannot contain `..` segments (so images can't be read from outside the intended directory) and the `extension` cannot contain `..` or path separators. Reading an image from disk by `filename` applies to the Node.js build only, and there you should build the `filename` from user input with `ExcelJS.utils.safeJoin(baseDir, userInput)` instead of `path.join` to keep the resolved path inside a base directory (it throws when the path escapes `baseDir`).
 
 ```javascript
 // Node.js only
