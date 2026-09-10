@@ -1774,7 +1774,8 @@ export class Workbook {
 
 	/**
 	 * Adds Image to Workbook and returns an id.
-	 * Fails if `img.filename` contains ".."
+	 * Fails if `img.filename` contains ".." or "\\0"
+	 * or if `img.extension` contains "..", "\\", "/", or "\\0"
 	 */
 	addImage(img: Image): number;
 
