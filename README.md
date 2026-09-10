@@ -2015,6 +2015,16 @@ const imageId2 = workbook.addImage({
 });
 ```
 
+An image `filename` cannot contain `..` segments - `addImage` rejects them to avoid reading files outside the intended directory. When you build a `filename` from user input, use `ExcelJS.utils.safeJoin(baseDir, userInput)` instead of `path.join` to keep the resolved path inside a base directory (it throws when the path escapes `baseDir`).
+
+```javascript
+const ExcelJS = require('devextreme-exceljs-fork');
+
+// throws if userInput resolves outside '/app/assets'
+const filename = ExcelJS.utils.safeJoin('/app/assets', userInput);
+const imageId = workbook.addImage({ filename, extension: 'png' });
+```
+
 ### Add image background to worksheet[⬆](#contents)<!-- Link generated with jump2header -->
 
 Using the image id from Workbook.addImage, the background to a worksheet can be set using the addBackgroundImage function
