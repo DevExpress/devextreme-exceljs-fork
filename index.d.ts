@@ -1773,8 +1773,8 @@ export class Workbook {
 	clearThemes(): void;
 
 	/**
-	 * Add Image to Workbook and return the id.
-	 * Throws if `filename` contains a path-traversal ("..") segment.
+	 * Adds Image to Workbook and returns an id.
+	 * Fails if `img.filename` contains ".."
 	 */
 	addImage(img: Image): number;
 
@@ -2042,9 +2042,9 @@ export namespace stream {
 
 export namespace utils {
 	/**
-	 * Resolve `userPath` against `baseDir` and confirm the result stays inside `baseDir`.
-	 * Use instead of `path.join` when building an `addImage({ filename })` path from
-	 * user-influenced input. Throws if the resolved path escapes `baseDir`.
+	 * Checks that `userPath` does not resolve to a path outside of `baseDir`.
+	 * Use instead of `path.join` when you calculate a path for `addImage({ filename })`
+	 * from user input. Fails if the resolved path escapes `baseDir`.
 	 */
 	function safeJoin(baseDir: string, userPath: string): string;
 }

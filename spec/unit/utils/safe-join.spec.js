@@ -10,11 +10,11 @@ describe('safe-join', () => {
   });
 
   it('throws when the user path escapes the base directory', () => {
-    expect(() => safeJoin(base, '../../etc/passwd')).to.throw(/outside the base directory/);
+    expect(() => safeJoin(base, '../../etc/passwd')).to.throw(/outside of the base directory/);
   });
 
   it('throws when the user path is an absolute path outside the base directory', () => {
-    expect(() => safeJoin(base, path.resolve('/etc/passwd'))).to.throw(/outside the base directory/);
+    expect(() => safeJoin(base, path.resolve('/etc/passwd'))).to.throw(/outside of the base directory/);
   });
 
   it('throws on a null byte in the user path', () => {
