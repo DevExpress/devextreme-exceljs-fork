@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const {promisify} = require('util');
 
 const testUtils = require('../../utils/index');
@@ -6,7 +7,7 @@ const testUtils = require('../../utils/index');
 const ExcelJS = verquire('exceljs');
 
 const TEST_XLSX_FILE_NAME = './spec/out/wb.test.xlsx';
-const IMAGE_FILENAME = `${__dirname}/../data/image.png`;
+const IMAGE_FILENAME = path.resolve(__dirname, '../data/image.png');
 const fsReadFileAsync = promisify(fs.readFile);
 
 describe('WorkbookWriter', () => {
@@ -17,6 +18,12 @@ describe('WorkbookWriter', () => {
 
     const ws2 = wb.addWorksheet();
     expect(ws2.name).to.match(/sheet\d+/);
+  });
+
+  it('rejects addImage with a path-traversal filename (T1334951)', () => {
+    const wb = new ExcelJS.stream.xlsx.WorkbookWriter();
+
+    expect(() => wb.addImage({filename: '../../etc/passwd', extension: 'png'})).to.throw(/\.\./);
   });
 
   describe('Serialise', () => {
