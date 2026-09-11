@@ -2022,6 +2022,9 @@ const imageId2 = workbook.addImage({
 
 You can also use `ExcelJS.utils.safeJoin()` instead of `path.join()` to validate file paths upon generation.
 
+> [!Important]
+> `safeJoin()` cannot detect symbolic links. If you pass a symbolic link to this function that escapes the base directory, `safeJoin()` does not throw an error.
+
 ```javascript
 // Node.js only
 const ExcelJS = require('devextreme-exceljs-fork');
