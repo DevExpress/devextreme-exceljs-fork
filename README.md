@@ -2017,8 +2017,8 @@ const imageId2 = workbook.addImage({
 
 `addImage` validates `filename` and `extension` values to prevent path traversal attacks. These parameters cannot contain the following strings:
 
-`filename`: `\0` and `..`
-`extension`: `\0`, `..`, `\`, and `/`
+- `filename`: `\0` and `..`
+- `extension`: `\0`, `..`, `\`, and `/`
 
 You can also use `ExcelJS.utils.safeJoin()` instead of `path.join()` to validate file paths upon generation.
 
