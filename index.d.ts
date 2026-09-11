@@ -1773,7 +1773,7 @@ export class Workbook {
 	clearThemes(): void;
 
 	/**
-	 * Adds Image to Workbook and returns an id.
+	 * Adds an image to the workbook and returns an ID.
 	 * Fails if `img.filename` contains ".." or "\\0"
 	 * or if `img.extension` contains "..", "\\", "/", or "\\0"
 	 */
@@ -2043,7 +2043,7 @@ export namespace stream {
 
 export namespace utils {
 	/**
-	 * Checks that `userPath` does not resolve to a path outside of `baseDir`.
+	 * Checks to ensure that `userPath` does not resolve to a path outside of `baseDir`.
 	 * Use instead of `path.join` when you calculate a path for `addImage({ filename })`
 	 * from user input. Fails if the resolved path escapes `baseDir`.
 	 */
