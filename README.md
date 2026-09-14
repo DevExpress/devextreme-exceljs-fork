@@ -2015,6 +2015,25 @@ const imageId2 = workbook.addImage({
 });
 ```
 
+`addImage` validates `filename` and `extension` values to prevent path traversal attacks. These parameters cannot contain the following strings:
+
+- `filename`: `\0` and `..`
+- `extension`: `\0`, `..`, `\`, and `/`
+
+You can also use `ExcelJS.utils.safeJoin()` instead of `path.join()` to validate file paths upon generation.
+
+> [!Important]
+> `safeJoin()` cannot detect symbolic links. If you pass a symbolic link to this function that escapes the base directory, `safeJoin()` does not throw an error.
+
+```javascript
+// Node.js only
+const ExcelJS = require('devextreme-exceljs-fork');
+
+// throws if userInput resolves outside '/app/assets'
+const filename = ExcelJS.utils.safeJoin('/app/assets', userInput);
+const imageId = workbook.addImage({ filename, extension: 'png' });
+```
+
 ### Add image background to worksheet[⬆](#contents)<!-- Link generated with jump2header -->
 
 Using the image id from Workbook.addImage, the background to a worksheet can be set using the addBackgroundImage function

@@ -1773,7 +1773,9 @@ export class Workbook {
 	clearThemes(): void;
 
 	/**
-	 * Add Image to Workbook and return the id
+	 * Adds an image to the workbook and returns an ID.
+	 * Fails if `img.filename` contains ".." or "\\0"
+	 * or if `img.extension` contains "..", "\\", "/", or "\\0"
 	 */
 	addImage(img: Image): number;
 
@@ -2037,4 +2039,14 @@ export namespace stream {
 			getColumn(c: number): Column;
 		}
 	}
+}
+
+export namespace utils {
+	/**
+	 * Checks to ensure that `userPath` does not resolve to a path outside of `baseDir`.
+	 * Use instead of `path.join` when you calculate a path for `addImage({ filename })`
+	 * from user input. Fails if the resolved path escapes `baseDir`.
+	 * Cannot detect symbolic links that escape the base directory.
+	 */
+	function safeJoin(baseDir: string, userPath: string): string;
 }
