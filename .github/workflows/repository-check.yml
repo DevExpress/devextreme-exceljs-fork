@@ -20,5 +20,7 @@ jobs:
         {
           ignoredAdvisories: [
             'GHSA-848j-6mx2-7j84', // elliptic
+            'GHSA-vfj7-8cjw-p6xm', // braces, no patch available, 2026-10-09
+            'GHSA-hp3w-g68c-fv3c', // sprintf-js, no patch available, 2026-10-09
           ]
         }
