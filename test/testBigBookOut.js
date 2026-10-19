@@ -5,13 +5,11 @@ const ColumnSum = require('./utils/column-sum');
 const Excel = require('../dx-excel-fork');
 
 const {Workbook} = Excel;
-const {WorkbookWriter} = Excel.stream.xlsx;
 
 if (process.argv[2] === 'help') {
   console.log('Usage:');
-  console.log('    node testBigBookOut filename count writer strings styles');
+  console.log('    node testBigBookOut filename count strings styles');
   console.log('Where:');
-  console.log('    writer is one of [stream, document]');
   console.log('    strings is one of [shared, own]');
   console.log('    styles is one of [styled, plain]');
   // eslint-disable-next-line no-process-exit
@@ -20,14 +18,10 @@ if (process.argv[2] === 'help') {
 
 const filename = process.argv[2];
 const count = process.argv.length > 3 ? parseInt(process.argv[3], 10) : 1000;
-const writer = process.argv.length > 4 ? process.argv[4] : 'stream';
-const strings = process.argv.length > 5 ? process.argv[5] : 'own';
-const styles = process.argv.length > 6 ? process.argv[6] : 'styled';
-
-const useStream = writer === 'stream';
+const strings = process.argv.length > 4 ? process.argv[4] : 'own';
+const styles = process.argv.length > 5 ? process.argv[5] : 'styled';
 
 const options = {
-  writer: useStream ? 'stream' : 'document',
   filename,
   useSharedStrings: strings === 'shared',
   useStyles: styles === 'styled',
@@ -37,7 +31,7 @@ console.log(JSON.stringify(options, null, '  '));
 const stopwatch = new HrStopwatch();
 stopwatch.start();
 
-const wb = useStream ? new WorkbookWriter(options) : new Workbook();
+const wb = new Workbook();
 const ws = wb.addWorksheet('blort');
 
 const fonts = {
@@ -126,7 +120,7 @@ function allDone() {
   console.log(`addRow avg ${(t1 * 1000000) / count}\xB5s`);
   console.log(`commit avg ${(t2 * 1000000) / count}\xB5s`);
   sw.start();
-  (useStream ? wb.commit() : wb.xlsx.writeFile(filename, options))
+  wb.xlsx.writeFile(filename, options)
     .then(() => {
       console.log(`Commit/writeFile: ${sw}`);
       stopwatch.stop();
