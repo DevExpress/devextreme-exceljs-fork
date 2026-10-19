@@ -1464,7 +1464,18 @@ export interface XlsxReadOptions {
 	ignoreNodes: string[];
 }
 
-export interface XlsxWriteOptions extends stream.xlsx.WorkbookWriterOptions {
+export interface XlsxWriteOptions {
+	/**
+	 * Specifies whether to use shared strings in the workbook. Default is true
+	 */
+	useSharedStrings: boolean;
+
+	/**
+	 * Specifies whether to add style information to the workbook.
+	 * Styles can add some performance overhead. Default is true
+	 */
+	useStyles: boolean;
+
 	/**
 	 * The option passed to JsZip#generateAsync(options)
 	 */
@@ -1912,133 +1923,6 @@ export interface Table extends Required<TableProperties> {
 
 export namespace config {
 	function setValue(key: 'promise', promise: any): void;
-}
-
-export namespace stream {
-	namespace xlsx {
-		interface WorkbookWriterOptions {
-			/**
-			 * Specifies a writable stream to write the XLSX workbook to.
-			 */
-			stream: import('stream').Stream;
-
-			/**
-			 * 	If stream not specified, this field specifies the path to a file to write the XLSX workbook to.
-			 */
-			filename: string;
-
-			/**
-			 * 	Specifies whether to use shared strings in the workbook. Default is false
-			 */
-			useSharedStrings: boolean;
-
-			/**
-			 * Specifies whether to add style information to the workbook.
-			 * Styles can add some performance overhead. Default is false
-			 */
-			useStyles: boolean;
-		}
-
-		interface ArchiverZipOptions {
-			comment: string;
-			forceLocalTime: boolean;
-			forceZip64: boolean;
-			store: boolean;
-			zlib: Partial<ZlibOptions>;
-		}
-
-		interface ZlibOptions {
-			/**
-			 * @default constants.Z_NO_FLUSH
-			 */
-			flush: number;
-			/**
-			 * @default constants.Z_FINISH
-			 */
-			finishFlush: number;
-			/**
-			 * @default 16*1024
-			 */
-			chunkSize: number;
-			windowBits: number;
-			level: number; // compression only
-			memLevel: number; // compression only
-			strategy: number; // compression only
-			dictionary: Buffer | NodeJS.TypedArray | DataView | ArrayBuffer; // deflate/inflate only, empty dictionary by default
-		}
-
-		interface WorkbookStreamWriterOptions extends WorkbookWriterOptions {
-
-			/**
-			 * Specifies whether to add style information to the workbook.
-			 * Styles can add some performance overhead. Default is false
-			 */
-			zip: Partial<ArchiverZipOptions>;
-		}
-
-		class WorkbookWriter extends Workbook {
-			constructor(options: Partial<WorkbookStreamWriterOptions>);
-			// commit all worksheets, then add suplimentary files
-			commit(): Promise<void>;
-			addStyles(): Promise<void>;
-			addThemes(): Promise<void>;
-			addOfficeRels(): Promise<void>;
-			addContentTypes(): Promise<void>;
-			addApp(): Promise<void>;
-			addCore(): Promise<void>;
-			addSharedStrings(): Promise<void>;
-			addWorkbookRels(): Promise<void>;
-			addWorkbook(): Promise<void>;
-		}
-
-
-		interface WorkbookStreamReaderOptions {
-			/**
-			 * @default 'emit'
-			 */
-			worksheets?: 'emit' | 'ignore';
-			/**
-			 * @default 'cache'
-			 */
-			sharedStrings?: 'cache' | 'emit' | 'ignore';
-			/**
-			 * @default 'ignore'
-			 */
-			hyperlinks?: 'cache' | 'emit' | 'ignore';
-			/**
-			 * @default 'ignore'
-			 */
-			styles?: 'cache' | 'ignore';
-			/**
-			 * @default 'ignore'
-			 */
-			entries?: 'emit' | 'ignore';
-		}
-
-		class WorkbookReader extends Workbook {
-			constructor(input: string | import('stream').Stream, options: Partial<WorkbookStreamReaderOptions>);
-			read(): Promise<void>;
-			[Symbol.asyncIterator](): AsyncGenerator<WorksheetReader>;
-			parse(): AsyncIterator<any>;
-		}
-
-		interface WorksheetReaderOptions {
-			workbook: Workbook;
-			id: number;
-			entry: import('stream').Stream;
-			options: WorkbookStreamReaderOptions;
-		}
-
-		class WorksheetReader {
-			constructor(options: WorksheetReaderOptions);
-			read(): Promise<void>;
-			[Symbol.asyncIterator](): AsyncGenerator<Row>;
-			parse(): AsyncIterator<Array<any>>;
-			dimensions(): number;
-			columns(): number;
-			getColumn(c: number): Column;
-		}
-	}
 }
 
 export namespace utils {
