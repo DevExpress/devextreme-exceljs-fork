@@ -16,6 +16,8 @@ Reverse engineered from Excel spreadsheet files as a project.
 pnpm install devextreme-exceljs-fork
 ```
 
+> **Note:** This fork does not include the streaming API of ExcelJS (`ExcelJS.stream.xlsx.WorkbookWriter` and `ExcelJS.stream.xlsx.WorkbookReader`). Use the `Workbook` API to read and write files.
+
 # New Features!
 
 * Merged [Add pivot table with limitations #2551](https://github.com/exceljs/exceljs/pull/2551). <br/> Many thanks to Protobi and <a href="https://github.com/mikez">Michael</a> for this contribution!
@@ -136,11 +138,6 @@ To be clear, all contributions added to this library will be included in the lib
             <ul>
               <li><a href="#reading-csv">Reading CSV</a></li>
               <li><a href="#writing-csv">Writing CSV</a></li>
-            </ul>
-          </li>
-          <li><a href="#streaming-io">Streaming I/O</a>
-            <ul>
-              <li><a href="#streaming-xlsx">Streaming XLSX</a></li>
             </ul>
           </li>
         </ul>
@@ -380,10 +377,7 @@ Worksheets support a property bucket to allow control over some features of the 
 // create new sheet with properties
 const worksheet = workbook.addWorksheet('sheet', {properties:{tabColor:{argb:'FF00FF00'}}});
 
-// create a new sheet writer with properties
-const worksheetWriter = workbookWriter.addWorksheet('sheet', {properties:{outlineLevelCol:1}});
-
-// adjust properties afterwards (not supported by worksheet-writer)
+// adjust properties afterwards
 worksheet.properties.outlineLevelCol = 2;
 worksheet.properties.defaultRowHeight = 15;
 ```
@@ -421,8 +415,8 @@ const worksheet =  workbook.addWorksheet('sheet', {
   pageSetup:{paperSize: 9, orientation:'landscape'}
 });
 
-// create a new sheet writer with pageSetup settings for fit-to-page
-const worksheetWriter = workbookWriter.addWorksheet('sheet', {
+// create new sheet with pageSetup settings for fit-to-page
+const worksheet2 = workbook.addWorksheet('sheet2', {
   pageSetup:{fitToPage: true, fitToHeight: 5, fitToWidth: 7}
 });
 
@@ -501,10 +495,6 @@ Note: Images are not currently supported.
 
 // Create worksheets with headers and footers
 var sheet = workbook.addWorksheet('sheet', {
-  headerFooter:{firstHeader: "Hello Exceljs", firstFooter: "Hello World"}
-});
-// Create worksheets with headers and footers
-var worksheetWriter = workbookWriter.addWorksheet('sheet', {
   headerFooter:{firstHeader: "Hello Exceljs", firstFooter: "Hello World"}
 });
 // Set footer (default centered), result: "Page 2 of 16"
@@ -810,9 +800,6 @@ row.eachCell(function(cell, colNumber) {
 row.eachCell({ includeEmpty: true }, function(cell, colNumber) {
   console.log('Cell ' + colNumber + ' = ' + cell.value);
 });
-
-// Commit a completed row to stream
-row.commit();
 
 // row metrics
 const rowSize = row.cellCount;
@@ -1986,7 +1973,7 @@ Adding images to a worksheet is a two-step process.
 First, the image is added to the workbook via the addImage() function which will also return an imageId value.
 Then, using the imageId, the image can be added to the worksheet either as a tiled background or covering a cell range.
 
-Note: As of this version, adjusting or transforming the image is not supported and images are not supported in streaming mode.
+Note: As of this version, adjusting or transforming the image is not supported.
 
 ### Add Image to Workbook[⬆](#contents)<!-- Link generated with jump2header -->
 
@@ -2361,194 +2348,10 @@ Dates are formatted using the npm module [dayjs](https://www.npmjs.com/package/d
  When writing a CSV you can supply the boolean dateUTC as true to have ExcelJS parse the date without automatically
  converting the timezone using `dayjs.utc()`.
 
-### Streaming I/O[⬆](#contents)<!-- Link generated with jump2header -->
-
-The File I/O documented above requires that an entire workbook is built up in memory before the file can be written.
- While convenient, it can limit the size of the document due to the amount of memory required.
-
-A streaming writer (or reader) processes the workbook or worksheet data as it is generated,
- converting it into file form as it goes. Typically this is much more efficient on memory as the final
- memory footprint and even intermediate memory footprints are much more compact than with the document version,
- especially when you consider that the row and cell objects are disposed once they are committed.
-
-The interface to the streaming workbook and worksheet is almost the same as the document versions with a few minor practical differences:
-
-* Once a worksheet is added to a workbook, it cannot be removed.
-* Once a row is committed, it is no longer accessible since it will have been dropped from the worksheet.
-* unMergeCells() is not supported.
-
-Note that it is possible to build the entire workbook without committing any rows.
- When the workbook is committed, all added worksheets (including all uncommitted rows) will be automatically committed.
- However in this case, little will have been gained over the Document version.
-
-#### Streaming XLSX[⬆](#contents)<!-- Link generated with jump2header -->
-
-##### Streaming XLSX Writer(#contents)<!-- Link generated with jump2header -->
-
-The streaming XLSX workbook writer is available in the ExcelJS.stream.xlsx namespace.
-
-The constructor takes an optional options object with the following fields:
-
-| Field            | Description |
-| ---------------- | ----------- |
-| stream           | Specifies a writable stream to write the XLSX workbook to. |
-| filename         | If stream not specified, this field specifies the path to a file to write the XLSX workbook to. |
-| useSharedStrings | Specifies whether to use shared strings in the workbook. Default is `false`. |
-| useStyles        | Specifies whether to add style information to the workbook. Styles can add some performance overhead. Default is `false`. |
-| zip              | [Zip options](https://www.archiverjs.com/global.html#ZipOptions) that ExcelJS internally passes to [Archiver](https://github.com/archiverjs/node-archiver). Default is `undefined`. |
-
-If neither stream nor filename is specified in the options, the workbook writer will create a StreamBuf object
- that will store the contents of the XLSX workbook in memory.
- This StreamBuf object, which can be accessed via the property workbook.stream, can be used to either
- access the bytes directly by stream.read() or to pipe the contents to another stream.
-
-```javascript
-// construct a streaming XLSX workbook writer with styles and shared strings
-const options = {
-  filename: './streamed-workbook.xlsx',
-  useStyles: true,
-  useSharedStrings: true
-};
-const workbook = new Excel.stream.xlsx.WorkbookWriter(options);
-```
-
-In general, the interface to the streaming XLSX writer is the same as the Document workbook (and worksheets)
- described above, in fact the row, cell and style objects are the same.
-
-However there are some differences...
-
-**Construction**
-
-As seen above, the WorkbookWriter will typically require the output stream or file to be specified in the constructor.
-
-**Committing Data**
-
-When a worksheet row is ready, it should be committed so that the row object and contents can be freed.
- Typically this would be done as each row is added...
-
-```javascript
-worksheet.addRow({
-   id: i,
-   name: theName,
-   etc: someOtherDetail
-}).commit();
-```
-
-The reason the WorksheetWriter does not commit rows as they are added is to allow cells to be merged across rows:
-
-```javascript
-worksheet.mergeCells('A1:B2');
-worksheet.getCell('A1').value = 'I am merged';
-worksheet.getCell('C1').value = 'I am not';
-worksheet.getCell('C2').value = 'Neither am I';
-worksheet.getRow(2).commit(); // now rows 1 and two are committed.
-```
-
-As each worksheet is completed, it must also be committed:
-
-```javascript
-// Finished adding data. Commit the worksheet
-worksheet.commit();
-```
-
-To complete the XLSX document, the workbook must be committed. If any worksheet in a workbook are uncommitted,
- they will be committed automatically as part of the workbook commit.
-
-```javascript
-// Finished the workbook.
-await workbook.commit();
-// ... the stream has been written
-```
-
-##### Streaming XLSX Reader(#contents)<!-- Link generated with jump2header -->
-
-The streaming XLSX workbook reader is available in the ExcelJS.stream.xlsx namespace.
-
-The constructor takes a required input argument and an optional options argument:
-
-| Argument              | Description |
-| --------------------- | ----------- |
-| input (required)      | Specifies the name of the file or the readable stream from which to read the XLSX workbook. |
-| options (optional)    | Specifies how to handle the event types occuring during the read parsing. |
-| options.entries       | Specifies whether to emit entries (`'emit'`) or not (`'ignore'`). Default is `'emit'`. |
-| options.sharedStrings | Specifies whether to cache shared strings (`'cache'`), which inserts them into the respective cell values, or whether to emit them (`'emit'`) or ignore them (`'ignore'`), in both of which case the cell value will be a reference to the shared string's index. Default is `'cache'`. |
-| options.hyperlinks    | Specifies whether to cache hyperlinks (`'cache'`), which inserts them into their respective cells, whether to emit them (`'emit'`) or whether to ignore them (`'ignore'`). Default is `'cache'`. |
-| options.styles        | Specifies whether to cache styles (`'cache'`), which inserts them into their respective rows and cells, or whether to ignore them (`'ignore'`). Default is `'cache'`. |
-| options.worksheets    | Specifies whether to emit worksheets (`'emit'`) or not (`'ignore'`). Default is `'emit'`. |
-
-```js
-const workbookReader = new ExcelJS.stream.xlsx.WorkbookReader('./file.xlsx');
-for await (const worksheetReader of workbookReader) {
-  for await (const row of worksheetReader) {
-    // ...
-  }
-}
-```
-
-Please note that `worksheetReader` returns an array of rows rather than each row individually for performance reasons: https://github.com/nodejs/node/issues/31979
-
-###### Iterating over all events(#contents)<!-- Link generated with jump2header -->
-
-Events on workbook are 'worksheet', 'shared-strings' and 'hyperlinks'. Events on worksheet are 'row' and 'hyperlinks'.
-
-```js
-const options = {
-  sharedStrings: 'emit',
-  hyperlinks: 'emit',
-  worksheets: 'emit',
-};
-const workbook = new ExcelJS.stream.xlsx.WorkbookReader('./file.xlsx', options);
-for await (const {eventType, value} of workbook.parse()) {
-  switch (eventType) {
-    case 'shared-strings':
-      // value is the shared string
-    case 'worksheet':
-      // value is the worksheetReader
-    case 'hyperlinks':
-      // value is the hyperlinksReader
-  }
-}
-```
-
-###### Readable stream(#contents)<!-- Link generated with jump2header -->
-
-While we strongly encourage to use async iteration, we also expose a streaming interface for backwards compatibility.
-
-```js
-const options = {
-  sharedStrings: 'emit',
-  hyperlinks: 'emit',
-  worksheets: 'emit',
-};
-const workbookReader = new ExcelJS.stream.xlsx.WorkbookReader('./file.xlsx', options);
-workbookReader.read();
-
-workbookReader.on('worksheet', worksheet => {
-  worksheet.on('row', row => {
-  });
-});
-
-workbookReader.on('shared-strings', sharedString => {
-  // ...
-});
-
-workbookReader.on('hyperlinks', hyperlinksReader => {
-  // ...
-});
-
-workbookReader.on('end', () => {
-  // ...
-});
-workbookReader.on('error', (err) => {
-  // ...
-});
-```
-
 # Browser[⬆](#contents)<!-- Link generated with jump2header -->
 
 A portion of this library has been isolated and tested for use within a browser environment.
 
-Due to the streaming nature of the workbook reader and workbook writer, these have not been included.
 Only the document based workbook may be used (see <a href="#create-a-workbook">Create a Workbook</a> for details).
 
 For example code using ExcelJS in the browser take a look at the <a href="https://github.com/exceljs/exceljs/tree/master/spec/browser">spec/browser</a> folder in the github repo.

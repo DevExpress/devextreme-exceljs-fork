@@ -14,6 +14,8 @@
 pnpm install devextreme-exceljs-fork
 ```
 
+> **注意：** 此分支不包含 ExcelJS 的流式 API（`ExcelJS.stream.xlsx.WorkbookWriter` 和 `ExcelJS.stream.xlsx.WorkbookReader`）。请使用 `Workbook` API 读取和写入文件。
+
 # 新的功能!
 
 * Merged [fix: styles rendering in case when "numFmt" is present in conditional formatting rules (resolves #1814) #1815](https://github.com/exceljs/exceljs/pull/1815). <br/> Many thanks to [@andreykrupskii](https://github.com/andreykrupskii) for this contribution!
@@ -129,11 +131,6 @@ pnpm install devextreme-exceljs-fork
             <ul>
               <li><a href="#读-csv">读 CSV</a></li>
               <li><a href="#写-csv">写 CSV</a></li>
-            </ul>
-          </li>
-          <li><a href="#流式-io">流式 I/O</a>
-            <ul>
-              <li><a href="#流式-xlsx">流式 XLSX</a></li>
             </ul>
           </li>
         </ul>
@@ -365,10 +362,7 @@ worksheet.state = 'veryHidden';
 // 创建具有属性的新工作表
 const worksheet = workbook.addWorksheet('sheet', {properties:{tabColor:{argb:'FF00FF00'}}});
 
-// 创建一个具有属性的可写的新工作表
-const worksheetWriter = workbookWriter.addWorksheet('sheet', {properties:{outlineLevelCol:1}});
-
-// 之后调整属性（工作表读写器不支持该操作）
+// 之后调整属性
 worksheet.properties.outlineLevelCol = 2;
 worksheet.properties.defaultRowHeight = 15;
 ```
@@ -406,8 +400,8 @@ const worksheet =  workbook.addWorksheet('sheet', {
   pageSetup:{paperSize: 9, orientation:'landscape'}
 });
 
-// 使用适合页面的pageSetup设置创建一个新的工作表编写器
-const worksheetWriter = workbookWriter.addWorksheet('sheet', {
+// 使用适合页面的pageSetup设置创建新工作表
+const worksheet2 = workbook.addWorksheet('sheet2', {
   pageSetup:{fitToPage: true, fitToHeight: 5, fitToWidth: 7}
 });
 
@@ -488,10 +482,6 @@ var sheet = workbook.addWorksheet('My Sheet', {
   headerFooter:{firstHeader: "Hello Exceljs", firstFooter: "Hello World"}
 });
 
-// 创建一个带有页眉和页脚可写的工作表
-var worksheetWriter = workbookWriter.addWorksheet('sheet', {
-  headerFooter:{firstHeader: "Hello Exceljs", firstFooter: "Hello World"}
-});
 // 代码中出现的&开头字符对应变量，相关信息可查阅下文的变量表
 // 设置页脚(默认居中),结果：“第 2 页，共 16 页”
 worksheet.headerFooter.oddFooter = "第 &P 页，共 &N 页";
@@ -791,9 +781,6 @@ row.eachCell(function(cell, colNumber) {
 row.eachCell({ includeEmpty: true }, function(cell, colNumber) {
   console.log('Cell ' + colNumber + ' = ' + cell.value);
 });
-
-// 提交给流一个完成的行
-row.commit();
 
 // 行尺寸
 const rowSize = row.cellCount;
@@ -2241,181 +2228,11 @@ CSV 解析器使用 [fast-csv](https://www.npmjs.com/package/fast-csv) 编写 CS
 
 日期使用 npm 模块 [dayjs](https://www.npmjs.com/package/dayjs) 格式化。如果未提供 `dateFormat`，则使用 `dayjs.ISO_8601`。编写 CSV 时，您可以提供布尔值 `dateUTC` 为 `true`，以使 ExcelJS 解析日期，而无需使用 `dayjs.utc()` 自动转换时区。
 
-### 流式 I/O[⬆](#目录)<!-- Link generated with jump2header -->
-
-上面记录的文件 I/O 需要在内存中建立整个工作簿，然后才能写入文件。虽然方便，但是由于所需的内存量，它可能会限制文档的大小。
-
-流写入器（或读取器）在生成工作簿或工作表数据时对其进行处理，然后将其转换为文件形式。通常，这在内存上效率要高得多，因为最终的内存占用量，甚至中间的内存占用量都比文档版本要紧凑得多，尤其是当您考虑到行和单元格对象一旦提交就被销毁时，尤其如此。
-
-流式工作簿和工作表的接口几乎与文档版本相同，但实际存在一些细微差别：
-
-* 将工作表添加到工作簿后，将无法将其删除。
-* 提交行后，将无法再访问该行，因为该行将从工作表中删除。
-* 不支持 `unMergeCells()`。
-
-请注意，可以在不提交任何行的情况下构建整个工作簿。提交工作簿后，所有添加的工作表（包括所有未提交的行）将自动提交。但是，在这种情况下，与文档版本相比收效甚微。
-
-#### 流式 XLSX[⬆](#目录)<!-- Link generated with jump2header -->
-
-##### 流式 XLSX 写入器[⬆](#目录)<!-- Link generated with jump2header -->
-
-流式 XLSX 写入器在 `ExcelJS.stream.xlsx` 命名空间中可用。
-
-构造函数采用带有以下字段的可选 `options` 对象：
-
-| 字段            | 描述 |
-| ---------------- | ----------- |
-| stream           | 指定要写入 XLSX 工作簿的可写流。 |
-| filename         | 如果未指定流，则此字段指定要写入 XLSX 工作簿的文件的路径。 |
-| useSharedStrings | 指定是否在工作簿中使用共享字符串。默认为 `false` |
-| useStyles        | 指定是否将样式信息添加到工作簿。样式会增加一些性能开销。默认为 `false` |
-| zip              | ExcelJS 内部传递给 [Archiver](https://github.com/archiverjs/node-archiver) 的 [Zip选项](https://www.archiverjs.com/global.html#ZipOptions)。默认值为 `undefined` |
-
-如果在选项中未指定 `stream` 或 `filename`，则工作簿编写器将创建一个 StreamBuf 对象，该对象将 XLSX 工作簿的内容存储在内存中。可以通过属性 `workbook.stream` 访问此 StreamBuf 对象，该对象可用于通过 `stream.read()` 直接访问字节，或将内容通过管道传输到另一个流。
-
-```javascript
-// 使用样式和共享字符串构造流式 XLSX 工作簿编写器
-const options = {
-  filename: './streamed-workbook.xlsx',
-  useStyles: true,
-  useSharedStrings: true
-};
-const workbook = new Excel.stream.xlsx.WorkbookWriter(options);
-```
-
-通常，流式 XLSX 写入器的接口与上述文档工作簿（和工作表）相同，实际上行，单元格和样式对象是相同的。
-
-但是有一些区别...
-
-**构造**
-
-如上所示，WorkbookWriter 通常将要求在构造函数中指定输出流或文件。
-
-**提交数据**
-
-当工作表行准备就绪时，应将其提交，以便可以释放行对象和内容。通常，这将在添加每一行时完成...
-
-```javascript
-worksheet.addRow({
-   id: i,
-   name: theName,
-   etc: someOtherDetail
-}).commit();
-```
-
-WorksheetWriter 在添加行时不提交行的原因是允许单元格跨行合并：
-```javascript
-worksheet.mergeCells('A1:B2');
-worksheet.getCell('A1').value = 'I am merged';
-worksheet.getCell('C1').value = 'I am not';
-worksheet.getCell('C2').value = 'Neither am I';
-worksheet.getRow(2).commit(); // now rows 1 and two are committed.
-```
-
-每个工作表完成后，还必须提交：
-
-```javascript
-// 完成添加数据。 提交工作表
-worksheet.commit();
-```
-
-要完成 XLSX 文档，必须提交工作簿。 如果未提交工作簿中的任何工作表，则将在工作簿提交中自动提交它们。
-
-```javascript
-// 完成 workbook.
-await workbook.commit();
-// ... 流已被写入
-```
-
-##### 流式 XLSX 阅读器[⬆](#目录)<!-- Link generated with jump2header -->
-
-流式 XLSX 工作簿阅读器可以在ExcelJS.stream.xlsx命名空间中找到。
-
-构造函数包含必需的输入参数和可选的options参数:
-
-| Argument              | Description |
-| --------------------- | ----------- |
-| input (必需的)        | 指定从中读取XLSX工作簿的文件或可读流的名称|
-| options (可选的)      | 指定如何处理读取解析期间发生的事件类型 |
-| options.entries       | 指定是否去触发事件(`'emit'`)或者不发出事件(`'ignore'`)，默认值是`'emit'` |
-| options.sharedStrings | 指定是否去缓存(`'cache'`)共享字符串，将其插入到相应的单元格值中，或者是否去触发(`'emit'`)或忽略(`'ignore'`)它们，在这两种情况下，单元格值都将是对共享字符串索引的引用。默认值是`'cache'` |
-| options.hyperlinks    | 指定是否去缓存超链接(`'cache'`)，将其插入到相应的单元格值中，是否去触发(`'emit'`)或忽略(`'ignore'`)它们。默认值是`'cache'` |
-| options.styles        | 指定是否去缓存样式(`'cache'`)，将其插入到相应的行或单元格值中，或是否忽略(`'忽略'`)它们。默认值是`'cache'`  |
-| options.worksheets    |指定是否去触发(`'emit'`)或忽略(`'ignore'`)工作表。默认值是`'emit'` |
-
-```js
-const workbook = new ExcelJS.stream.xlsx.WorkbookReader('./file.xlsx');
-for await (const worksheetReader of workbookReader) {
-  for await (const row of worksheetReader) {
-    // ...
-  }
-}
-```
-
-请注意，由于性能原因，`worksheetReader`返回一个行数组，而不是单独返回每一行: https://github.com/nodejs/node/issues/31979
-
-###### 迭代遍历所有事件[⬆](#目录)<!-- Link generated with jump2header -->
-
-工作簿上的事件是 'worksheet'、'shared-strings' 和 'hyperlinks'。 工作表上的事件是 'row' 和 'hyperlinks'.
-
-```js
-const options = {
-  sharedStrings: 'emit',
-  hyperlinks: 'emit',
-  worksheets: 'emit',
-};
-const workbook = new ExcelJS.stream.xlsx.WorkbookReader('./file.xlsx', options);
-for await (const {eventType, value} of workbook.parse()) {
-  switch (eventType) {
-    case 'shared-strings':
-      // 值是共享字符串
-    case 'worksheet':
-      // 值是worksheetReader
-    case 'hyperlinks':
-      // 值是hyperlinksReader
-  }
-}
-```
-
-###### 可读流[⬆](#目录)<!-- Link generated with jump2header -->
-
-我们强烈建议使用异步迭代，但我们也公开了流接口以实现向后兼容性。
-
-```js
-const options = {
-  sharedStrings: 'emit',
-  hyperlinks: 'emit',
-  worksheets: 'emit',
-};
-const workbookReader = new ExcelJS.stream.xlsx.WorkbookReader('./file.xlsx', options);
-workbookReader.read();
-
-workbookReader.on('worksheet', worksheet => {
-  worksheet.on('row', row => {
-  });
-});
-
-workbookReader.on('shared-strings', sharedString => {
-  // ...
-});
-
-workbookReader.on('hyperlinks', hyperlinksReader => {
-  // ...
-});
-
-workbookReader.on('end', () => {
-  // ...
-});
-workbookReader.on('error', (err) => {
-  // ...
-});
-```
-
 # 浏览器[⬆](#目录)<!-- Link generated with jump2header -->
 
 该库的一部分已被隔离，并经过测试可在浏览器环境中使用。
 
-由于工作簿读写器的流式传输性质，因此未包括这些内容。只能使用基于文档的工作簿（有关详细信息，请参见 <a href="#创建工作簿">创建工作簿</a>）。
+只能使用基于文档的工作簿（有关详细信息，请参见 <a href="#创建工作簿">创建工作簿</a>）。
 
 例如，在浏览器中使用 ExcelJS 的代码可查看 github 中的<a href="https://github.com/exceljs/exceljs/tree/master/spec/browser"> spec / browser </a>文件夹。
 
