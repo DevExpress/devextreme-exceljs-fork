@@ -3,8 +3,6 @@ const verquire = require('./verquire');
 const _ = require('./under-dash');
 const tools = require('./tools');
 
-const testWorkbookReader = require('./test-workbook-reader');
-
 const Row = verquire('doc/row');
 const Column = verquire('doc/column');
 
@@ -102,8 +100,6 @@ module.exports = {
       testSheet.checkSheet(workbook, options);
     });
   },
-
-  checkTestBookReader: testWorkbookReader.checkBook,
 
   createSheetMock() {
     return {

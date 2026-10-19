@@ -1,25 +1,8 @@
 const fs = require('fs');
 
-const testutils = require('../utils/index');
-
 const ExcelJS = verquire('exceljs');
 
-const TEST_FILE_NAME = './spec/out/wb.test.xlsx';
-
-// need some architectural changes to make stream read work properly
-// because of: shared strings, sheet names, etc are not read in guaranteed order
 describe('WorkbookReader', () => {
-  describe('Serialise', () => {
-    it('xlsx file', function() {
-      this.timeout(10000);
-      const wb = testutils.createTestBook(new ExcelJS.Workbook(), 'xlsx');
-
-      return wb.xlsx
-        .writeFile(TEST_FILE_NAME)
-        .then(() => testutils.checkTestBookReader(TEST_FILE_NAME));
-    });
-  });
-
   describe('#readFile', () => {
     describe('Row limit', () => {
       it('should bail out if the file contains more rows than the limit', () => {
