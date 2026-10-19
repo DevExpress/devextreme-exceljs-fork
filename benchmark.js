@@ -5,50 +5,19 @@ const runs = 3;
 
 (async () => {
   try {
-    await runProfiling('huge xlsx file streams', () => {
-      return new Promise((resolve, reject) => {
-        // Data taken from http://eforexcel.com/wp/downloads-18-sample-csv-files-data-sets-for-testing-sales/
-        const workbookReader = new ExcelJS.stream.xlsx.WorkbookReader(
-          './spec/integration/data/huge.xlsx'
-        );
-        workbookReader.read();
-
-        let worksheetCount = 0;
-        let rowCount = 0;
-        workbookReader.on('worksheet', worksheet => {
-          worksheetCount += 1;
-          console.log(`Reading worksheet ${worksheetCount}`);
-          worksheet.on('row', row => {
-            rowCount += 1;
-            if (rowCount % 50000 === 0) console.log(`Reading row ${rowCount}`);
-          });
-        });
-
-        workbookReader.on('end', () => {
-          console.log(`Processed ${worksheetCount} worksheets and ${rowCount} rows`);
-          resolve();
-        });
-        workbookReader.on('error', reject);
-      });
-    });
-
-    await runProfiling('huge xlsx file async iteration', async () => {
+    await runProfiling('huge xlsx file read', async () => {
       // Data taken from http://eforexcel.com/wp/downloads-18-sample-csv-files-data-sets-for-testing-sales/
-      const workbookReader = new ExcelJS.stream.xlsx.WorkbookReader(
-        'spec/integration/data/huge.xlsx'
-      );
-      let worksheetCount = 0;
-      let rowCount = 0;
-      for await (const worksheetReader of workbookReader) {
-        worksheetCount += 1;
-        console.log(`Reading worksheet ${worksheetCount}`);
-        for await (const row of worksheetReader) {
-          rowCount += 1;
-          if (rowCount % 50000 === 0) console.log(`Reading row ${rowCount}`);
-        }
-      }
+      const workbook = new ExcelJS.Workbook();
+      await workbook.xlsx.readFile('./spec/integration/data/huge.xlsx');
 
-      console.log(`Processed ${worksheetCount} worksheets and ${rowCount} rows`);
+      let rowCount = 0;
+      workbook.eachSheet(worksheet => {
+        worksheet.eachRow(() => {
+          rowCount += 1;
+        });
+      });
+
+      console.log(`Processed ${workbook.worksheets.length} worksheets and ${rowCount} rows`);
     });
   } catch (err) {
     console.error(err);
