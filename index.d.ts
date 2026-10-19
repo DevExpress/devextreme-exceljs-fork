@@ -593,7 +593,7 @@ export interface Row extends Style {
 	splice(start: number, count: number, ...insert: any[]): void;
 
 	/**
-	 * Commit a completed row to stream
+	 * Has no effect. Kept for compatibility with code written for the removed streaming writer
 	 */
 	commit(): void;
 	destroy(): void;
@@ -1344,8 +1344,6 @@ export interface Worksheet {
 		imageId: string;
 		range: ImageRange;
 	}>;
-
-	commit(): void;
 
 	model: WorksheetModel;
 
