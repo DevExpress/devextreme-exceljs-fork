@@ -2,10 +2,10 @@ minimumReleaseAgeExclude:
   - '@devexpress/sbom-toolkit'
 overrides:
   tar@<7.5.21: ^7.5.21
-  body-parser@>=2.0.0 <2.3.0: ^2.3.0
-  fast-uri@>=3.0.0 <3.1.8: ^3.1.8
+  body-parser@>=2.0.0 <2.4.0: ^2.4.0
+  fast-uri@>=3.0.0 <3.1.9: ^3.1.9
   qs@>=2.2.5 <6.16.0: ^6.16.0
-  undici@>=7.0.0 <7.29.1: ^7.29.1
+  undici@>=7.0.0 <7.30.1: ^7.30.1
   brace-expansion@>=5.0.0 <5.0.12: ^5.0.12
   http-cache-semantics@<4.2.1: ^4.2.1
   compression@<1.8.2: ^1.8.2
