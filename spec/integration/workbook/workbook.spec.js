@@ -443,6 +443,58 @@ describe('Workbook', () => {
       });
     });
 
+    it('Without styles', () => {
+      const wb = testUtils.createTestBook(new ExcelJS.Workbook(), 'xlsx');
+
+      return wb.xlsx
+        .writeFile(TEST_XLSX_FILE_NAME, {useStyles: false})
+        .then(() => {
+          const wb2 = new ExcelJS.Workbook();
+          return wb2.xlsx.readFile(TEST_XLSX_FILE_NAME);
+        })
+        .then(wb2 => {
+          testUtils.checkTestBook(wb2, 'xlsx', undefined, {
+            checkStyles: false,
+          });
+        });
+    });
+
+    it('with conditional formatting and without styles', () => {
+      const wb = testUtils.createTestBook(new ExcelJS.Workbook(), 'xlsx', [
+        'conditionalFormatting',
+      ]);
+
+      return wb.xlsx
+        .writeFile(TEST_XLSX_FILE_NAME, {useStyles: false})
+        .then(() => {
+          const wb2 = new ExcelJS.Workbook();
+          return wb2.xlsx.readFile(TEST_XLSX_FILE_NAME);
+        })
+        .then(wb2 => {
+          testUtils.checkTestBook(wb2, 'xlsx', ['conditionalFormatting']);
+        });
+    });
+
+    it('with conditional formatting that contains numFmt and without styles', async () => {
+      const sheet = 'conditionalFormatting';
+      const cf1 = testUtils.conditionalFormatting.abbreviation;
+
+      const wb1 = new ExcelJS.Workbook();
+      wb1.addWorksheet(sheet).addConditionalFormatting(cf1);
+      await wb1.xlsx.writeFile(TEST_XLSX_FILE_NAME, {useStyles: false});
+
+      const wb2 = new ExcelJS.Workbook();
+      await wb2.xlsx.readFile(TEST_XLSX_FILE_NAME);
+      const [cf2] = wb2.getWorksheet(sheet).conditionalFormattings;
+
+      expect(cf2.rules.map(rule => rule.style.numFmt)).to.deep.equal([
+        {id: 164, formatCode: '#,##0.000,K;-#,##0.000,K'},
+        {id: 164, formatCode: '#,##0.000,K;-#,##0.000,K'},
+        {id: 165, formatCode: '#,##0.000,,M;-#,##0.000,,M'},
+        {id: 165, formatCode: '#,##0.000,,M;-#,##0.000,,M'},
+      ]);
+    });
+
     it('empty string', () => {
       const wb = new ExcelJS.Workbook();
       const ws = wb.addWorksheet();
