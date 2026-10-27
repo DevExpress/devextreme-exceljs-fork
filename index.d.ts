@@ -1464,11 +1464,6 @@ export interface XlsxReadOptions {
 
 export interface XlsxWriteOptions {
 	/**
-	 * Specifies whether to use shared strings in the workbook. Default is true
-	 */
-	useSharedStrings: boolean;
-
-	/**
 	 * Specifies whether to add style information to the workbook.
 	 * Styles can add some performance overhead. Default is true
 	 */
