@@ -16,7 +16,6 @@ describe('github issues', () => {
           wb.xlsx
             .writeBuffer({
               useStyles: true,
-              useSharedStrings: true,
             })
             .then(buffer => {
               const wstream = fs.createWriteStream(TEST_XLSX_FILE_NAME);

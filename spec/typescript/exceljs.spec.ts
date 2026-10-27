@@ -10,7 +10,6 @@ describe('typescript', () => {
     ws.getCell('A1').value = 7;
     const buffer = await wb.xlsx.writeBuffer({
       useStyles: true,
-      useSharedStrings: true,
     });
 
     const wb2 = new ExcelJS.Workbook();
