@@ -49,11 +49,16 @@ To read from a stream, use `await workbook.xlsx.read(stream)`. To read a buffer,
 
 `Row.commit()` is kept for compatibility and has no effect, so you can remove the calls.
 
+## `createInputStream` removal
+
+`workbook.xlsx.createInputStream()` and `workbook.csv.createInputStream()` are removed. Since 4.0, they only threw an error. Use `workbook.xlsx.read(stream)` and `workbook.csv.read(stream)` instead.
+
 ## TypeScript
 
 - The `stream` namespace is removed, together with `stream.xlsx.WorkbookWriter`, `WorkbookReader`, `WorksheetReader` and their option types (`WorkbookWriterOptions`, `WorkbookStreamWriterOptions`, `WorkbookStreamReaderOptions`, `WorksheetReaderOptions`, `ArchiverZipOptions`, `ZlibOptions`).
 - `XlsxWriteOptions` no longer extends `stream.xlsx.WorkbookWriterOptions`, so `filename`, `stream` and `useSharedStrings` are gone. They had no effect on `workbook.xlsx.write`, `writeFile` and `writeBuffer`, so you can remove them. `useStyles` and `zip` stay.
 - `Worksheet.commit()` is removed. A regular worksheet never had this method at runtime.
+- `Csv.createInputStream()` is removed. It only threw an error at runtime.
 
 ## Dependencies
 

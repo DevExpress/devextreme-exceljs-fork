@@ -1596,11 +1596,6 @@ export interface Csv {
 	read(stream: import('stream').Stream, options?: Partial<CsvReadOptions>): Promise<Worksheet>;
 
 	/**
-	 * Create input stream for reading
-	 */
-	createInputStream(options?: Partial<CsvReadOptions>): import('events').EventEmitter;
-
-	/**
 	 * write to a buffer
 	 */
 	writeBuffer(options?: Partial<CsvWriteOptions>): Promise<Buffer>;
