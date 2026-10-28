@@ -39,26 +39,6 @@ jobs:
         env:
           CI: true
 
-  benchmark:
-    timeout-minutes: 15
-    name: Measure performance impact of changes
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-
-    steps:
-      - uses: actions/checkout@v7
-      - name: Install pnpm
-        uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v6
-        with:
-          node-version-file: '.node-version'
-          cache: 'pnpm'
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm run benchmark
-        env:
-          CI: true
-
   typescript:
     timeout-minutes: 15
     name: Ensure typescript compatibility
