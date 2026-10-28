@@ -2,7 +2,7 @@ const fs = require('fs');
 
 const ExcelJS = verquire('exceljs');
 
-describe('WorkbookReader', () => {
+describe('Workbook xlsx reader', () => {
   describe('#readFile', () => {
     describe('Row limit', () => {
       it('should bail out if the file contains more rows than the limit', () => {
