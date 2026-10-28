@@ -49,8 +49,6 @@
     "lint:fix": "eslint --format node_modules/eslint-friendly-formatter/index.js --fix .",
     "lint:staged": "lint-staged",
     "clean": "rm -rf build/ && rm -rf dist",
-    "benchmark": "node --expose-gc benchmark",
-    "benchmark:debug": "node --expose-gc --inspect-brk --trace-deopt benchmark",
     "build": "grunt build",
     "prepare-and-install": "pnpm install --frozen-lockfile && grunt build",
     "preversion": "pnpm run clean && pnpm run build && pnpm run test:version",
