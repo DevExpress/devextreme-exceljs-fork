@@ -5,7 +5,6 @@ workbook.xlsx
   .readFile('./out/template.xlsx')
   .then(stream => {
     const options = {
-      useSharedStrings: true,
       useStyles: true,
     };
 
