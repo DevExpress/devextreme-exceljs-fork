@@ -59,6 +59,7 @@ To read from a stream, use `await workbook.xlsx.read(stream)`. To read a buffer,
 - `XlsxWriteOptions` no longer extends `stream.xlsx.WorkbookWriterOptions`, so `filename`, `stream` and `useSharedStrings` are gone. They had no effect on `workbook.xlsx.write`, `writeFile` and `writeBuffer`, so you can remove them. `useStyles` and `zip` stay.
 - `Worksheet.commit()` is removed. A regular worksheet never had this method at runtime.
 - `Csv.createInputStream()` is removed. It only threw an error at runtime.
+- `Row.commit()` is marked as deprecated.
 
 ## Dependencies
 

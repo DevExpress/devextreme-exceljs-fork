@@ -593,7 +593,7 @@ export interface Row extends Style {
 	splice(start: number, count: number, ...insert: any[]): void;
 
 	/**
-	 * Has no effect. Kept for compatibility with code written for the removed streaming writer
+	 * @deprecated Has no effect. Kept for compatibility with code written for the removed streaming writer
 	 */
 	commit(): void;
 	destroy(): void;
@@ -1465,7 +1465,8 @@ export interface XlsxReadOptions {
 export interface XlsxWriteOptions {
 	/**
 	 * Specifies whether to add style information to the workbook.
-	 * Styles can add some performance overhead. Default is true
+	 * Styles can add some performance overhead. Default is true.
+	 * Conditional formatting styles are written regardless of this option
 	 */
 	useStyles: boolean;
 
