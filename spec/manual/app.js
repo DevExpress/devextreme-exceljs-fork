@@ -3,24 +3,26 @@
 /* eslint-disable no-console */
 
 const fs = require('fs');
-const express = require('express');
+const http = require('http');
 const path = require('path');
 const ExcelJS = require('../../lib/dx-exceljs-fork.nodejs.js');
 const StreamBuf = require('../../lib/utils/stream-buf');
 
+const publicDir = path.join(__dirname, 'public');
+const contentTypes = {
+  '.html': 'text/html',
+  '.js': 'text/javascript',
+};
+
 console.log('Copying bundle.js to public folder');
 fs.createReadStream(`${__dirname}/../../dist/dx-exceljs-fork.min.js`).pipe(
-  fs.createWriteStream(`${__dirname}/public/dx-exceljs-fork.min.js`)
+  fs.createWriteStream(path.join(publicDir, 'exceljs.min.js'))
 );
 fs.createReadStream(`${__dirname}/../../dist/dx-exceljs-fork.js`).pipe(
-  fs.createWriteStream(`${__dirname}/public/dx-exceljs-fork.js`)
+  fs.createWriteStream(path.join(publicDir, 'exceljs.js'))
 );
 
-const app = express();
-
-app.use('/', express.static(path.join(__dirname, 'public')));
-
-app.post('/api/upload', (req, res) => {
+function upload(req, res) {
   const wb = new ExcelJS.Workbook();
 
   const stream = new StreamBuf();
@@ -48,7 +50,30 @@ app.post('/api/upload', (req, res) => {
   });
 
   req.pipe(stream);
+}
+
+function serveStatic(req, res) {
+  const {pathname} = new URL(req.url, 'http://localhost');
+  const filePath = path.join(publicDir, pathname === '/' ? 'index.html' : pathname);
+
+  fs.readFile(filePath, (err, data) => {
+    if (err) {
+      res.statusCode = 404;
+      res.end();
+      return;
+    }
+    res.setHeader('Content-Type', contentTypes[path.extname(filePath)] || 'application/octet-stream');
+    res.end(data);
+  });
+}
+
+const server = http.createServer((req, res) => {
+  if (req.method === 'POST' && req.url === '/api/upload') {
+    upload(req, res);
+    return;
+  }
+  serveStatic(req, res);
 });
 
-app.listen(3003);
+server.listen(3003);
 console.log('Listening on port 3003');
