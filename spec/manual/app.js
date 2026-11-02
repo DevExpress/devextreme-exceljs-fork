@@ -53,8 +53,13 @@ function upload(req, res) {
 }
 
 function serveStatic(req, res) {
-  const {pathname} = new URL(req.url, 'http://localhost');
-  const filePath = path.join(publicDir, pathname === '/' ? 'index.html' : pathname);
+  const url = URL.parse(req.url, 'http://localhost');
+  if (!url) {
+    res.statusCode = 400;
+    res.end();
+    return;
+  }
+  const filePath = path.join(publicDir, url.pathname === '/' ? 'index.html' : url.pathname);
 
   fs.readFile(filePath, (err, data) => {
     if (err) {
