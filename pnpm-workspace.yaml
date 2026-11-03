@@ -15,11 +15,8 @@ overrides:
   websocket-driver@<0.7.5: ^0.7.5
   brace-expansion@>=5.0.0 <5.0.12: ^5.0.12
   browserslist@<4.28.7: ^4.28.7
-  http-cache-semantics@<4.2.1: ^4.2.1
   pbkdf2@<=3.1.6: ^3.1.7
-  proxy-addr@>=1.1.0 <2.0.8: ^2.0.8
   shell-quote@>=1.8.4 <1.11.0: ^1.11.0
-  body-parser@>=2.0.0 <2.4.0: ^2.4.0
 
 allowBuilds:
   core-js: true
