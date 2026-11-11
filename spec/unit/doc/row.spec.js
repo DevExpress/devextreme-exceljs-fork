@@ -376,4 +376,16 @@ describe('Row', () => {
     expect(row1.cellCount).to.equal(5);
     expect(row1.actualCellCount).to.equal(4);
   });
+
+  it('does nothing on commit, even after destroy', () => {
+    const sheet = createSheetMock();
+    const row1 = sheet.getRow(1);
+    row1.getCell(1).value = 5;
+
+    row1.commit();
+    expect(row1.getCell(1).value).to.equal(5);
+
+    row1.destroy();
+    expect(() => row1.commit()).to.not.throw();
+  });
 });

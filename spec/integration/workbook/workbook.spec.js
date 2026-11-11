@@ -403,6 +403,189 @@ describe('Workbook', () => {
         });
     });
 
+    it('with conditional formatting', () => {
+      const wb = testUtils.createTestBook(new ExcelJS.Workbook(), 'xlsx', [
+        'conditionalFormatting',
+      ]);
+
+      return wb.xlsx
+        .writeFile(TEST_XLSX_FILE_NAME)
+        .then(() => {
+          const wb2 = new ExcelJS.Workbook();
+          return wb2.xlsx.readFile(TEST_XLSX_FILE_NAME);
+        })
+        .then(wb2 => {
+          testUtils.checkTestBook(wb2, 'xlsx', ['conditionalFormatting']);
+        });
+    });
+
+    it('with conditional formatting that contains numFmt (#1814)', async () => {
+      const sheet = 'conditionalFormatting';
+
+      // generate file with conditional formatting that contains styles with numFmt
+      const wb1 = new ExcelJS.Workbook();
+      const ws1 = wb1.addWorksheet(sheet);
+      const cf1 = testUtils.conditionalFormatting.abbreviation;
+      ws1.addConditionalFormatting(cf1);
+      await wb1.xlsx.writeFile(TEST_XLSX_FILE_NAME);
+
+      // read generated file and extract saved conditional formatting rule
+      const wb2 = new ExcelJS.Workbook();
+      await wb2.xlsx.readFile(TEST_XLSX_FILE_NAME);
+      const ws2 = wb2.getWorksheet(sheet);
+      const [cf2] = ws2.conditionalFormattings;
+
+      // verify that rules from generated file contain styles with valid numFmt
+      cf2.rules.forEach(rule => {
+        expect(rule.style.numFmt).to.exist();
+        expect(rule.style.numFmt.id).to.be.a('number');
+        expect(rule.style.numFmt.formatCode).to.be.a('string');
+      });
+    });
+
+    it('Without styles', () => {
+      const wb = testUtils.createTestBook(new ExcelJS.Workbook(), 'xlsx');
+
+      return wb.xlsx
+        .writeFile(TEST_XLSX_FILE_NAME, {useStyles: false})
+        .then(() => {
+          const wb2 = new ExcelJS.Workbook();
+          return wb2.xlsx.readFile(TEST_XLSX_FILE_NAME);
+        })
+        .then(wb2 => {
+          testUtils.checkTestBook(wb2, 'xlsx', undefined, {
+            checkStyles: false,
+          });
+        });
+    });
+
+    it('with conditional formatting and without styles', () => {
+      const wb = testUtils.createTestBook(new ExcelJS.Workbook(), 'xlsx', [
+        'conditionalFormatting',
+      ]);
+
+      return wb.xlsx
+        .writeFile(TEST_XLSX_FILE_NAME, {useStyles: false})
+        .then(() => {
+          const wb2 = new ExcelJS.Workbook();
+          return wb2.xlsx.readFile(TEST_XLSX_FILE_NAME);
+        })
+        .then(wb2 => {
+          testUtils.checkTestBook(wb2, 'xlsx', ['conditionalFormatting']);
+        });
+    });
+
+    it('with conditional formatting that contains numFmt and without styles', async () => {
+      const sheet = 'conditionalFormatting';
+      const cf1 = testUtils.conditionalFormatting.abbreviation;
+
+      const wb1 = new ExcelJS.Workbook();
+      wb1.addWorksheet(sheet).addConditionalFormatting(cf1);
+      await wb1.xlsx.writeFile(TEST_XLSX_FILE_NAME, {useStyles: false});
+
+      const wb2 = new ExcelJS.Workbook();
+      await wb2.xlsx.readFile(TEST_XLSX_FILE_NAME);
+      const [cf2] = wb2.getWorksheet(sheet).conditionalFormattings;
+
+      expect(cf2.rules.map(rule => rule.style.numFmt)).to.deep.equal([
+        {id: 164, formatCode: '#,##0.000,K;-#,##0.000,K'},
+        {id: 164, formatCode: '#,##0.000,K;-#,##0.000,K'},
+        {id: 165, formatCode: '#,##0.000,,M;-#,##0.000,,M'},
+        {id: 165, formatCode: '#,##0.000,,M;-#,##0.000,,M'},
+      ]);
+    });
+
+    it('writes notes', async () => {
+      const wb = new ExcelJS.Workbook();
+      const ws = wb.addWorksheet('Hello');
+      ws.getCell('B2').value = 5;
+      ws.getCell('B2').note = 'five';
+
+      const note = {
+        texts: [
+          {
+            font: {
+              size: 12,
+              color: {argb: 'FFFF6600'},
+              name: 'Calibri',
+              scheme: 'minor',
+            },
+            text: 'seven',
+          },
+        ],
+        margins: {
+          insetmode: 'auto',
+          inset: [0.13, 0.13, 0.25, 0.25],
+        },
+        protection: {
+          locked: 'True',
+          lockText: 'True',
+        },
+        editAs: 'twoCells',
+      };
+      ws.getCell('D2').value = 7;
+      ws.getCell('D2').note = note;
+
+      await wb.xlsx.writeFile(TEST_XLSX_FILE_NAME);
+
+      const wb2 = new ExcelJS.Workbook();
+      await wb2.xlsx.readFile(TEST_XLSX_FILE_NAME);
+      const ws2 = wb2.getWorksheet('Hello');
+
+      expect(ws2.getCell('B2').value).to.equal(5);
+      expect(ws2.getCell('B2').note).to.equal('five');
+      expect(ws2.getCell('D2').value).to.equal(7);
+      expect(ws2.getCell('D2').note.texts).to.deep.equal(note.texts);
+      expect(ws2.getCell('D2').note.margins).to.deep.equal(note.margins);
+      expect(ws2.getCell('D2').note.protection).to.deep.equal(note.protection);
+      expect(ws2.getCell('D2').note.editAs).to.deep.equal(note.editAs);
+    });
+
+    it('Cell annotation supports setting margins and protection properties', async () => {
+      const wb = new ExcelJS.Workbook();
+      const ws = wb.addWorksheet('Hello');
+      ws.getCell('B2').value = 5;
+      ws.getCell('B2').note = 'five';
+      const note = {
+        texts: [
+          {
+            font: {
+              size: 12,
+              color: {argb: 'FFFF6600'},
+              name: 'Calibri',
+              scheme: 'minor',
+            },
+            text: 'seven',
+          },
+        ],
+        margins: {
+          insetmode: 'custom',
+          inset: [0.25, 0.25, 0.35, 0.35],
+        },
+        protection: {
+          locked: 'False',
+          lockText: 'False',
+        },
+        editAs: 'oneCells',
+      };
+      ws.getCell('D2').value = 7;
+      ws.getCell('D2').note = note;
+
+      await wb.xlsx.writeFile(TEST_XLSX_FILE_NAME);
+
+      const wb2 = new ExcelJS.Workbook();
+      await wb2.xlsx.readFile(TEST_XLSX_FILE_NAME);
+      const ws2 = wb2.getWorksheet('Hello');
+      expect(ws2.getCell('B2').value).to.equal(5);
+      expect(ws2.getCell('B2').note).to.equal('five');
+
+      expect(ws2.getCell('D2').value).to.equal(7);
+      expect(ws2.getCell('D2').note.texts).to.deep.equal(note.texts);
+      expect(ws2.getCell('D2').note.margins).to.deep.equal(note.margins);
+      expect(ws2.getCell('D2').note.protection).to.deep.equal(note.protection);
+      expect(ws2.getCell('D2').note.editAs).to.deep.equal(note.editAs);
+    });
+
     it('empty string', () => {
       const wb = new ExcelJS.Workbook();
       const ws = wb.addWorksheet();
