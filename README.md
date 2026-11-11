@@ -16,7 +16,8 @@ Reverse engineered from Excel spreadsheet files as a project.
 pnpm install devextreme-exceljs-fork
 ```
 
-> **Note:** This fork does not include the streaming API of ExcelJS (`ExcelJS.stream.xlsx.WorkbookWriter` and `ExcelJS.stream.xlsx.WorkbookReader`). Use the `Workbook` API to read and write files.
+> [!Important]
+> This fork does not include the ExcelJS streaming API (`ExcelJS.stream.xlsx.WorkbookWriter` and `ExcelJS.stream.xlsx.WorkbookReader`). Use the `Workbook` API to read and write files.
 
 # New Features!
 
