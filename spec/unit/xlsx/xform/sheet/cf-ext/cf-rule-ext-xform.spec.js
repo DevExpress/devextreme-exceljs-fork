@@ -88,4 +88,58 @@ const expectations = [
 
 describe('CfRuleExtXform', () => {
   testXformHelper(expectations);
+
+  describe('prepare', () => {
+    const x14IdPattern = /^\{[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}\}$/;
+    const prepareExtRule = () => {
+      const model = {type: 'iconSet', iconSet: '3Triangles'};
+      new CfRuleExtXform().prepare(model);
+      return model.x14Id;
+    };
+
+    it('generates a v4 UUID x14Id with crypto.randomUUID', () => {
+      expect(prepareExtRule()).to.match(x14IdPattern);
+    });
+
+    describe('without crypto.randomUUID (browser on a non-secure page)', () => {
+      // Hides the Crypto.prototype method; `delete` restores it
+      const stubCrypto = (name, value) =>
+        // eslint-disable-next-line n/no-unsupported-features/node-builtins
+        Object.defineProperty(globalThis.crypto, name, {value, configurable: true});
+
+      beforeEach(() => {
+        stubCrypto('randomUUID', undefined);
+      });
+
+      afterEach(() => {
+        // eslint-disable-next-line n/no-unsupported-features/node-builtins
+        delete globalThis.crypto.randomUUID;
+        // eslint-disable-next-line n/no-unsupported-features/node-builtins
+        delete globalThis.crypto.getRandomValues;
+      });
+
+      [
+        {randomByte: 0x00, expected: '{00000000-0000-4000-8000-000000000000}'},
+        {randomByte: 0xff, expected: '{FFFFFFFF-FFFF-4FFF-BFFF-FFFFFFFFFFFF}'},
+      ].forEach(({randomByte, expected}) => {
+        it(`sets the version and variant bits when all random bytes are 0x${randomByte.toString(16)}`, () => {
+          stubCrypto('getRandomValues', array => array.fill(randomByte));
+
+          expect(prepareExtRule()).to.equal(expected);
+        });
+      });
+
+      it('generates a v4 UUID x14Id with crypto.getRandomValues', () => {
+        // eslint-disable-next-line n/no-unsupported-features/node-builtins
+        expect(globalThis.crypto.randomUUID).to.be.undefined();
+
+        const first = prepareExtRule();
+        const second = prepareExtRule();
+
+        expect(first).to.match(x14IdPattern);
+        expect(second).to.match(x14IdPattern);
+        expect(first).to.not.equal(second);
+      });
+    });
+  });
 });

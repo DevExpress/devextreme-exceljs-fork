@@ -18,6 +18,12 @@
       "matchPackageNames": ["js-yaml"],
       "matchUpdateTypes": ["major"],
       "enabled": false
+    },
+    {
+      "description": "@noble/hashes v2 is ESM-only. The Browserify + Babel 8 build doesn't convert ESM to CommonJS, so the browser bundle can't include it. Stay on v1 until the build moves to esbuild.",
+      "matchPackageNames": ["@noble/hashes"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
     }
   ]
 }
