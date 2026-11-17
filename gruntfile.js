@@ -176,6 +176,22 @@ module.exports = function(grunt) {
     },
   });
 
-  grunt.registerTask('build', ['babel:dist', 'browserify', 'terser', 'exorcise', 'copy']);
+  // Browserify silently bundles crypto-browserify (~38 packages) for any require('crypto').
+  // Fail the build instead.
+  grunt.registerTask('check-bundle', () => {
+    const forbidden = /node_modules[\\/](crypto-browserify|elliptic|bn\.js|pbkdf2|sha\.js)[\\/]/;
+    ['./dist/dx-exceljs-fork.js.map', './dist/dx-exceljs-fork.bare.js.map'].forEach(map => {
+      const found = new Set();
+      grunt.file.readJSON(map).sources.forEach(source => {
+        const match = forbidden.exec(source);
+        if (match) found.add(match[1]);
+      });
+      if (found.size) {
+        grunt.fail.fatal(`${map} bundles Node crypto polyfills: ${[...found].join(', ')}`);
+      }
+    });
+  });
+
+  grunt.registerTask('build', ['babel:dist', 'browserify', 'terser', 'exorcise', 'check-bundle', 'copy']);
   grunt.registerTask('ug', ['terser']);
 };

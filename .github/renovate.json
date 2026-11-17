@@ -3,11 +3,6 @@
   "extends": ["github>DevExpress/devextreme-renovate-config"],
   "packageRules": [
     {
-      "matchPackageNames": ["path-to-regexp"],
-      "matchUpdateTypes": ["minor", "major"],
-      "enabled": false
-    },
-    {
       "description": "chai v5+ is ESM-only and breaks the CommonJS Mocha test setup (spec/config/setup.js uses require). dirty-chai v3 in turn requires chai 6 (peer: '>=6.2.0 <7'), so it's pinned too. Stay on chai 4 / dirty-chai 2 until the test stack is migrated to ESM.",
       "matchPackageNames": ["chai", "dirty-chai"],
       "matchUpdateTypes": ["major"],
@@ -16,6 +11,12 @@
     {
       "description": "js-yaml is a transitive-only override kept for the merge-DoS hardening, backported to v4 in 4.3.0. Consumers (mocha, grunt) don't support v5's breaking rewrite (removed safeLoad/safeDump and the Type API). Stay on v4.",
       "matchPackageNames": ["js-yaml"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
+    },
+    {
+      "description": "@noble/hashes v2 is ESM-only. The Browserify + Babel 8 build doesn't convert ESM to CommonJS, so the browser bundle can't include it. Stay on v1 until the build moves to esbuild.",
+      "matchPackageNames": ["@noble/hashes"],
       "matchUpdateTypes": ["major"],
       "enabled": false
     }

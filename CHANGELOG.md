@@ -1,3 +1,16 @@
+## Unreleased
+
+### What Changed
+
+- Removed `crypto-browserify` and its dependencies (such as `elliptic`, `bn.js` and `pbkdf2`) from the browser bundles (`dist/dx-exceljs-fork(.bare)(.min).js`).
+- `worksheet.protect()` now calculates the SHA-512 password hash with `@noble/hashes` (a new dependency) and generates the salt with `crypto.getRandomValues()`. Protected worksheets are unchanged: Excel accepts the same passwords as before.
+- New runtime requirements:
+    - `worksheet.protect()` with a password and writing extended conditional formatting rules (see below) require the Web Crypto API (`globalThis.crypto`). Node.js 22+ and all modern browsers include it. Some test environments that emulate a browser don't: for example, jsdom 19 and earlier (Jest 28 and earlier with `testEnvironment: 'jsdom'`).
+    - In browsers, `worksheet.protect()` with a password requires `BigInt`, which Internet Explorer 11 and Safari earlier than 14 don't support.
+- Fixed an error (`crypto.randomUUID is not a function`) thrown in browsers when you write a workbook that contains extended conditional formatting rules on a non-secure page (served over plain HTTP from a host other than `localhost`). Extended rules include:
+    - data bars, unless they set `gradient: true`
+    - icon sets with custom icons, and the `3Triangles`, `3Stars` and `5Boxes` icon sets
+
 ## v5.0.0
 
 ### What Changed
