@@ -2,6 +2,7 @@
 
 ### What Changed
 
+- Removed `dist/es5`, the ES5 copy of `lib/` for Node.js versions earlier than 10 and ES5 browsers (see [Replace `dist/es5` Imports](#replace-distes5-imports)). Also removed `index.ts`, which re-exported it. TypeScript types still come from `index.d.ts`.
 - Removed `crypto-browserify` and its dependencies (such as `elliptic`, `bn.js` and `pbkdf2`) from the browser bundles (`dist/dx-exceljs-fork(.bare)(.min).js`).
 - `worksheet.protect()` now calculates the SHA-512 password hash with `@noble/hashes` (a new dependency) and generates the salt with `crypto.getRandomValues()`. Protected worksheets are unchanged: Excel accepts the same passwords as before.
 - New runtime requirements:
@@ -10,6 +11,26 @@
 - Fixed an error (`crypto.randomUUID is not a function`) thrown in browsers when you write a workbook that contains extended conditional formatting rules on a non-secure page (served over plain HTTP from a host other than `localhost`). Extended rules include:
     - data bars, unless they set `gradient: true`
     - icon sets with custom icons, and the `3Triangles`, `3Stars` and `5Boxes` icon sets
+
+### How to Update Existing Apps
+
+#### Replace `dist/es5` Imports
+
+Import the package root instead.
+
+**v5.x and earlier**
+
+```js
+const ExcelJS = require('devextreme-exceljs-fork/dist/es5');
+```
+
+**v6.0.0+**
+
+```js
+const ExcelJS = require('devextreme-exceljs-fork');
+```
+
+Node.js then loads `lib/`, which requires Node.js 22.21.1 or later. Bundlers that read the `browser` field, such as webpack and Vite, load `dist/dx-exceljs-fork.min.js`. To use that bundle with a bundler that ignores the `browser` field, import it directly: `devextreme-exceljs-fork/dist/dx-exceljs-fork.min.js`. You can remove the `core-js` and `regenerator-runtime` imports that `dist/es5` required.
 
 ## v5.0.0
 
