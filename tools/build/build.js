@@ -85,6 +85,8 @@ async function build(minify) {
 }
 
 async function main() {
+  // Start from an empty dist/, so stale files never get packed
+  fs.rmSync(path.join(root, 'dist'), {recursive: true, force: true});
   await build(false);
   await build(true);
   fs.copyFileSync(path.join(root, 'LICENSE'), path.join(root, 'dist/LICENSE'));

@@ -15,12 +15,6 @@
       "enabled": false
     },
     {
-      "description": "Node polyfills in the browser bundles (tools/build). Their next majors change behaviour: timers-browserify 2 adds a global setImmediate.",
-      "matchPackageNames": ["buffer", "timers-browserify"],
-      "matchUpdateTypes": ["major"],
-      "enabled": false
-    },
-    {
       "description": "@noble/hashes v2 is ESM-only. Jest can't require() it by default, so customers' tests that call protect() with a password break. Upgrade with a migration note.",
       "matchPackageNames": ["@noble/hashes"],
       "matchUpdateTypes": ["major"],
