@@ -1,23 +1,11 @@
 overrides:
-  asn1.js: ^5.4.1
   glob: ^14.0.2
-  qs: ^6.16.1
-  grunt-exorcise>exorcist: ^2.0.0
-  tar: ^7.5.11
   minimatch: ^11.0.1
   serialize-javascript: ^7.1.3
   flatted: ^3.4.2
-  picomatch@<2.3.2: ^2.3.2
-  lodash: ~4.18.1
-  "@babel/plugin-transform-modules-systemjs": ^8.0.0
   diff: ^9.0.0
   js-yaml: ^4.3.2
-  websocket-driver@<0.7.5: ^0.7.5
-  brace-expansion@>=5.0.0 <5.0.12: ^5.0.12
-  browserslist@<4.28.7: ^4.28.7
-  pbkdf2@<=3.1.6: ^3.1.7
-  shell-quote@>=1.8.4 <1.11.0: ^1.11.0
 
 allowBuilds:
-  core-js: true
+  esbuild: false
   unrs-resolver: true

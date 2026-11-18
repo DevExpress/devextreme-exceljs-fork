@@ -141,6 +141,13 @@ module.exports = [
   },
 
   {
+    files: ['**/*.mjs'],
+    languageOptions: {
+      sourceType: 'module',
+    },
+  },
+
+  {
     files: ['eslint.config.js', 'playwright.config.js'],
     rules: {
       'import-x/no-extraneous-dependencies': ['error', {devDependencies: true}],

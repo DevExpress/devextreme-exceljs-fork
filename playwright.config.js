@@ -8,12 +8,17 @@ module.exports = defineConfig({
   timeout: 30000,
   retries: 0,
   reporter: process.env.CI ? 'dot' : 'list',
+  // One project per bundle; spec/browser reads `bundle`
   projects: [
-    {
-      name: 'chrome',
-      use: {
-        channel: 'chrome',
-      },
+    'dx-exceljs-fork.js',
+    'dx-exceljs-fork.min.js',
+    'dx-exceljs-fork.bare.js',
+    'dx-exceljs-fork.bare.min.js',
+  ].map(bundle => ({
+    name: bundle,
+    use: {
+      channel: 'chrome',
+      bundle,
     },
-  ],
+  })),
 });
