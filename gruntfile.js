@@ -56,28 +56,12 @@ const preamble = `/*!
 /* eslint-enable max-len */
 
 module.exports = function(grunt) {
-  grunt.loadNpmTasks('grunt-babel');
   grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-terser');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-exorcise');
 
   grunt.initConfig({
-    babel: {
-      options: {
-        sourceMap: true,
-        compact: false,
-      },
-      dist: {
-        files: [
-          {
-            expand: true,
-            src: ['./lib/**/*.js'],
-            dest: './build/',
-          },
-        ],
-      },
-    },
     browserify: {
       options: {
         banner: preamble,
@@ -166,10 +150,6 @@ module.exports = function(grunt) {
     copy: {
       dist: {
         files: [
-          {
-            expand: true, src: ['**'], cwd: './build/lib', dest: './dist/es5',
-          },
-          {src: './build/lib/dx-exceljs-fork.nodejs.js', dest: './dist/es5/index.js'},
           {src: './LICENSE', dest: './dist/LICENSE'},
         ],
       },
@@ -192,6 +172,6 @@ module.exports = function(grunt) {
     });
   });
 
-  grunt.registerTask('build', ['babel:dist', 'browserify', 'terser', 'exorcise', 'check-bundle', 'copy']);
+  grunt.registerTask('build', ['browserify', 'terser', 'exorcise', 'check-bundle', 'copy']);
   grunt.registerTask('ug', ['terser']);
 };

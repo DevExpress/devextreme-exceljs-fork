@@ -170,52 +170,11 @@ pnpm install devextreme-exceljs-fork
 # 导入[⬆](#目录)<!-- Link generated with jump2header -->
 
 ```javascript
-const ExcelJS = require('exceljs');
+const ExcelJS = require('devextreme-exceljs-fork');
 ```
 
-## ES5 导入[⬆](#目录)<!-- Link generated with jump2header -->
-
-要使用 ES5 编译代码，请使用 *dist/es5* 路径。
-
-```javascript
-const ExcelJS = require('exceljs/dist/es5');
-```
-
-**注意：**ES5 版本对许多 polyfill 都具有隐式依赖，而 exceljs 不再明确添加。
-您需要在依赖项中添加 `core-js` 和 `regenerator-runtime`，并在导入 `exceljs` 之前在代码中包含以下引用：
-
-```javascript
-// exceljs 所需的 polyfills
-require('core-js/modules/es.promise');
-require('core-js/modules/es.string.includes');
-require('core-js/modules/es.object.assign');
-require('core-js/modules/es.object.keys');
-require('core-js/modules/es.symbol');
-require('core-js/modules/es.symbol.async-iterator');
-require('regenerator-runtime/runtime');
-
-const ExcelJS = require('exceljs/dist/es5');
-```
-
-对于 IE 11，您还需要一个 polyfill 以支持 unicode regex 模式。 例如，
-
-```js
-const rewritePattern = require('regexpu-core');
-const {generateRegexpuOptions} = require('@babel/helper-create-regexp-features-plugin/lib/util');
-
-const {RegExp} = global;
-try {
-  new RegExp('a', 'u');
-} catch (err) {
-  global.RegExp = function(pattern, flags) {
-    if (flags && flags.includes('u')) {
-      return new RegExp(rewritePattern(pattern, flags, generateRegexpuOptions({flags, pattern})));
-    }
-    return new RegExp(pattern, flags);
-  };
-  global.RegExp.prototype = RegExp.prototype;
-}
-```
+在 Node.js 中，这会加载 `lib/` 中的 CommonJS 源代码，需要 Node.js 22.21.1 或更高版本。
+浏览器使用 `dist/` 中的包（参见[浏览器端](#浏览器端)）。
 
 ## 浏览器端[⬆](#目录)<!-- Link generated with jump2header -->
 

@@ -5,7 +5,7 @@ const globals = require('globals');
 
 module.exports = [
   {
-    ignores: ['build/**', 'dist/**', 'out/**', 'spec/manual/public/**'],
+    ignores: ['dist/**', 'out/**', 'spec/manual/public/**'],
   },
 
   {
