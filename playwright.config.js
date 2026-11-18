@@ -12,8 +12,6 @@ module.exports = defineConfig({
   projects: [
     'dx-exceljs-fork.js',
     'dx-exceljs-fork.min.js',
-    'dx-exceljs-fork.bare.js',
-    'dx-exceljs-fork.bare.min.js',
   ].map(bundle => ({
     name: bundle,
     use: {

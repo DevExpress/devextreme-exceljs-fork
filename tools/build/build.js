@@ -53,11 +53,12 @@ const ignoreDependencySourceMaps = {
 // through an alias or a direct require (hashing uses @noble/hashes).
 const forbidden = /node_modules[\\/](crypto-browserify|elliptic|bn\.js|pbkdf2|sha\.js)[\\/]/;
 
-async function build(name, minify) {
+async function build(minify) {
+  const outfile = `dist/dx-exceljs-fork${minify ? '.min' : ''}.js`;
   const {metafile} = await esbuild.build({
     absWorkingDir: root,
-    entryPoints: ['lib/dx-exceljs-fork.bare.js'],
-    outfile: `dist/${name}${minify ? '.min' : ''}.js`,
+    entryPoints: ['lib/dx-exceljs-fork.browser.js'],
+    outfile,
     bundle: true,
     minify,
     platform: 'browser',
@@ -79,16 +80,13 @@ async function build(name, minify) {
 
   const found = Object.keys(metafile.inputs).filter(input => forbidden.test(input));
   if (found.length) {
-    throw new Error(`${name} bundles Node crypto polyfills:\n${found.join('\n')}`);
+    throw new Error(`${outfile} bundles Node crypto polyfills:\n${found.join('\n')}`);
   }
 }
 
 async function main() {
-  // .bare is the same bundle under a name apps already use
-  for (const name of ['dx-exceljs-fork', 'dx-exceljs-fork.bare']) {
-    await build(name, false);
-    await build(name, true);
-  }
+  await build(false);
+  await build(true);
   fs.copyFileSync(path.join(root, 'LICENSE'), path.join(root, 'dist/LICENSE'));
 }
 

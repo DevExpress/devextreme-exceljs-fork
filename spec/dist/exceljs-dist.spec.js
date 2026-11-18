@@ -4,7 +4,7 @@ const pkg = require('../../package.json');
 
 const exists = path => fs.promises.access(path).then(() => true).catch(() => false);
 
-const bundles = ['dx-exceljs-fork.js', 'dx-exceljs-fork.min.js', 'dx-exceljs-fork.bare.js', 'dx-exceljs-fork.bare.min.js'];
+const bundles = ['dx-exceljs-fork.js', 'dx-exceljs-fork.min.js'];
 
 describe('ExcelJS', () => {
   describe('dist folder', () => {
@@ -16,12 +16,6 @@ describe('ExcelJS', () => {
     });
     it('should include dx-exceljs-fork.min.js', async () => {
       expect(await exists('./dist/dx-exceljs-fork.min.js')).to.be.true();
-    });
-    it('should include dx-exceljs-fork.bare.js', async () => {
-      expect(await exists('./dist/dx-exceljs-fork.bare.js')).to.be.true();
-    });
-    it('should include dx-exceljs-fork.bare.min.js', async () => {
-      expect(await exists('./dist/dx-exceljs-fork.bare.min.js')).to.be.true();
     });
   });
 

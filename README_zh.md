@@ -184,10 +184,7 @@ const ExcelJS = require('devextreme-exceljs-fork');
 <script src="dx-exceljs-fork.min.js"></script>
 ```
 
-该脚本会添加全局变量 `ExcelJS`。这些包也可以与 CommonJS 和 AMD 加载器一起使用。读取 `package.json` 中 `browser` 字段的打包工具（例如 webpack 和 Vite）会加载 `dx-exceljs-fork.min.js`。
-
-* `dx-exceljs-fork.js`：同一个包，未压缩。
-* `dx-exceljs-fork.bare.js` 和 `dx-exceljs-fork.bare.min.js`：上述文件的副本，为兼容而保留。
+该脚本会添加全局变量 `ExcelJS`。这些包也可以与 CommonJS 和 AMD 加载器一起使用。读取 `package.json` 中 `browser` 字段的打包工具（例如 webpack 和 Vite）会加载 `dx-exceljs-fork.min.js`。`dx-exceljs-fork.js` 是同一个包，未压缩。
 
 
 # 接口[⬆](#目录)<!-- Link generated with jump2header -->

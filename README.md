@@ -192,10 +192,7 @@ The `dist/` folder contains bundles for browsers that support ES2020, for exampl
 <script src="dx-exceljs-fork.min.js"></script>
 ```
 
-The script adds the `ExcelJS` global. The bundles also work with CommonJS and AMD loaders. Bundlers that read the `browser` field of `package.json`, such as webpack and Vite, load `dx-exceljs-fork.min.js`.
-
-* `dx-exceljs-fork.js`: the same bundle, not minified.
-* `dx-exceljs-fork.bare.js` and `dx-exceljs-fork.bare.min.js`: copies of the files above, kept for compatibility.
+The script adds the `ExcelJS` global. The bundles also work with CommonJS and AMD loaders. Bundlers that read the `browser` field of `package.json`, such as webpack and Vite, load `dx-exceljs-fork.min.js`. `dx-exceljs-fork.js` is the same bundle, not minified.
 
 
 # Interface[⬆](#contents)<!-- Link generated with jump2header -->

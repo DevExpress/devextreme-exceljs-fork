@@ -3,9 +3,9 @@
 ### What Changed
 
 - Removed `dist/es5`, the ES5 copy of `lib/` for Node.js versions earlier than 10 and ES5 browsers (see [Replace `dist/es5` Imports](#replace-distes5-imports)). Also removed `index.ts`, which re-exported it. TypeScript types still come from `index.d.ts`.
-- The browser bundles (`dist/dx-exceljs-fork(.bare)(.min).js`) are now built with esbuild instead of Browserify and Babel. They target ES2020 instead of ES5, so they're smaller: gzipped `dx-exceljs-fork.min.js` is 150 KB instead of 189 KB.
-- `dx-exceljs-fork.js` and `dx-exceljs-fork.min.js` no longer include the core-js and regenerator-runtime polyfills, so they're now identical to the `.bare` files. They also no longer define the `regeneratorRuntime` global.
-- Removed `crypto-browserify` and its dependencies (such as `elliptic`, `bn.js` and `pbkdf2`) from the browser bundles (`dist/dx-exceljs-fork(.bare)(.min).js`).
+- The browser bundles (`dist/dx-exceljs-fork(.min).js`) are now built with esbuild instead of Browserify and Babel. They target ES2020 instead of ES5, so they're smaller: gzipped `dx-exceljs-fork.min.js` is 150 KB instead of 189 KB.
+- Removed `dist/dx-exceljs-fork.bare.js` and `dist/dx-exceljs-fork.bare.min.js`. `dx-exceljs-fork(.min).js` no longer includes the core-js and regenerator-runtime polyfills, so it now has the same code and replaces them (see [Replace `.bare` Bundles](#replace-bare-bundles)). It also no longer defines the `regeneratorRuntime` global.
+- Removed `crypto-browserify` and its dependencies (such as `elliptic`, `bn.js` and `pbkdf2`) from the browser bundles (`dist/dx-exceljs-fork(.min).js`).
 - `worksheet.protect()` now calculates the SHA-512 password hash with `@noble/hashes` (a new dependency) and generates the salt with `crypto.getRandomValues()`. Protected worksheets are unchanged: Excel accepts the same passwords as before.
 - New runtime requirements:
     - `worksheet.protect()` with a password and writing extended conditional formatting rules (see below) require the Web Crypto API (`globalThis.crypto`). Node.js 22+ and all modern browsers include it. Some test environments that emulate a browser don't: for example, jsdom 19 and earlier (Jest 28 and earlier with `testEnvironment: 'jsdom'`).
@@ -33,6 +33,22 @@ const ExcelJS = require('devextreme-exceljs-fork');
 ```
 
 Node.js then loads `lib/`, which requires Node.js 22.21.1 or later. Bundlers that read the `browser` field, such as webpack and Vite, load `dist/dx-exceljs-fork.min.js`. To use that bundle with a bundler that ignores the `browser` field, import it directly: `devextreme-exceljs-fork/dist/dx-exceljs-fork.min.js`. You can remove the `core-js` and `regenerator-runtime` imports that `dist/es5` required.
+
+#### Replace `.bare` Bundles
+
+Load `dx-exceljs-fork.min.js` or `dx-exceljs-fork.js` instead. They no longer include polyfills.
+
+**v5.x and earlier**
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/devextreme-exceljs-fork@5.0.0/dist/dx-exceljs-fork.bare.min.js"></script>
+```
+
+**v6.0.0+**
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/devextreme-exceljs-fork@6.0.0/dist/dx-exceljs-fork.min.js"></script>
+```
 
 #### Internet Explorer 11
 
