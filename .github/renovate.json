@@ -13,12 +13,6 @@
       "matchPackageNames": ["js-yaml"],
       "matchUpdateTypes": ["major"],
       "enabled": false
-    },
-    {
-      "description": "@noble/hashes v2 is ESM-only. Jest can't require() it by default, so customers' tests that call protect() with a password break. Upgrade with a migration note.",
-      "matchPackageNames": ["@noble/hashes"],
-      "matchUpdateTypes": ["major"],
-      "enabled": false
     }
   ]
 }

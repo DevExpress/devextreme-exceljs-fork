@@ -3,13 +3,14 @@
 ### What Changed
 
 - Removed `dist/es5`, the ES5 copy of `lib/` for Node.js versions earlier than 10 and ES5 browsers (see [Replace `dist/es5` Imports](#replace-distes5-imports)). Also removed `index.ts`, which re-exported it. TypeScript types still come from `index.d.ts`.
-- The browser bundles (`dist/dx-exceljs-fork(.min).js`) are now built with esbuild instead of Browserify and Babel. They target ES2020 instead of ES5, so they're smaller: gzipped `dx-exceljs-fork.min.js` is 150 KB instead of 189 KB.
+- The browser bundles (`dist/dx-exceljs-fork(.min).js`) are now built with esbuild instead of Browserify and Babel. They target ES2020 instead of ES5, so they're smaller: gzipped `dx-exceljs-fork.min.js` is 149 KB instead of 189 KB.
 - Removed `dist/dx-exceljs-fork.bare.js` and `dist/dx-exceljs-fork.bare.min.js`. `dx-exceljs-fork(.min).js` no longer includes the core-js and regenerator-runtime polyfills, so it now has the same code and replaces them (see [Replace `.bare` Bundles](#replace-bare-bundles)). It also no longer defines the `regeneratorRuntime` global.
 - Removed `crypto-browserify` and its dependencies (such as `elliptic`, `bn.js` and `pbkdf2`) from the browser bundles (`dist/dx-exceljs-fork(.min).js`).
-- `worksheet.protect()` now calculates the SHA-512 password hash with `@noble/hashes` (a new dependency) and generates the salt with `crypto.getRandomValues()`. Protected worksheets are unchanged: Excel accepts the same passwords as before.
+- `worksheet.protect()` now calculates the SHA-512 password hash with `@noble/hashes` 2.x (a new dependency) and generates the salt with `crypto.getRandomValues()`. Protected worksheets are unchanged: Excel accepts the same passwords as before.
 - New runtime requirements:
     - `worksheet.protect()` with a password and writing extended conditional formatting rules (see below) require the Web Crypto API (`globalThis.crypto`). Node.js 22+ and all modern browsers include it. Some test environments that emulate a browser don't: for example, jsdom 19 and earlier (Jest 28 and earlier with `testEnvironment: 'jsdom'`).
     - The browser bundles require a browser that supports ES2020, for example, Chrome and Edge 80+, Firefox 74+, or Safari 14.1+. Internet Explorer 11 isn't supported (see [Internet Explorer 11](#internet-explorer-11)).
+    - Jest tests that call `worksheet.protect()` with a password require a configuration change (see [Configure Jest for Worksheet Protection](#configure-jest-for-worksheet-protection)).
 - Fixed an error (`crypto.randomUUID is not a function`) thrown in browsers when you write a workbook that contains extended conditional formatting rules on a non-secure page (served over plain HTTP from a host other than `localhost`). Extended rules include:
     - data bars, unless they set `gradient: true`
     - icon sets with custom icons, and the `3Triangles`, `3Stars` and `5Boxes` icon sets
@@ -53,6 +54,48 @@ Load `dx-exceljs-fork.min.js` or `dx-exceljs-fork.js` instead. They no longer in
 #### Internet Explorer 11
 
 The browser bundles no longer run in Internet Explorer 11 or other browsers without ES2020 support. If your app supports these browsers, continue to use v5.x.
+
+#### Configure Jest for Worksheet Protection
+
+`worksheet.protect()` hashes the password with `@noble/hashes` 2.x, which is an ES module. Jest loads the package's Node.js entry point and can't `require()` ES modules by default, so tests that call `worksheet.protect()` with a password fail with `Must use import to load ES Module` (Jest 30) or `Jest encountered an unexpected token` (Jest 29). Other features aren't affected.
+
+Choose one of the following options:
+
+| Option | Requirements | Tests of browser code | Tests of Node.js code |
+|---|---|---|---|
+| Map to the browser bundle | Jest 29 or 30 | Yes | No |
+| Enable ES module support | Jest 30.4+ on Node.js 24.9+ | Yes | Yes |
+| Transform with Babel | Jest 29 or 30, a Babel config with `@babel/preset-env` | Yes | Yes |
+
+If one Jest config runs tests of both browser and Node.js code, choose an option that supports both. If you use this package to export DevExtreme components, your tests run browser code: DevExtreme uses only the browser bundle.
+
+**Map to the browser bundle** (Jest 29 and 30). Your tests then load the same bundle that bundlers load in your app. This doesn't require Babel:
+
+```js
+// jest.config.js
+module.exports = {
+  moduleNameMapper: {
+    '^devextreme-exceljs-fork$': 'devextreme-exceljs-fork/dist/dx-exceljs-fork.min.js',
+  },
+};
+```
+
+The mapping applies to all tests that use this config, and the bundle doesn't include Node.js-only features, such as `readFile()`, `writeFile()` and `ModelContainer`. Don't use it for tests of Node.js code.
+
+**Enable ES module support** (Jest 30.4+ on Node.js 24.9+). Run Jest with the `--experimental-vm-modules` Node.js option wherever you run it, for example, in npm scripts, CI and your IDE. Node.js prints an `ExperimentalWarning` for this option. With earlier Jest or Node.js versions, `worksheet.protect()` still fails.
+
+```sh
+NODE_OPTIONS=--experimental-vm-modules npx jest
+```
+
+**Transform with Babel** (Jest 29 and 30). Let Babel transform `@noble/hashes`. This requires a Babel config with `@babel/preset-env`:
+
+```js
+// jest.config.js
+module.exports = {
+  transformIgnorePatterns: ['/node_modules/(?!(\\.pnpm/[^/]+/node_modules/)?@noble/hashes/)'],
+};
+```
 
 ## v5.0.0
 
