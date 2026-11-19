@@ -61,11 +61,11 @@ The browser bundles no longer run in Internet Explorer 11 or other browsers with
 
 Choose one of the following options:
 
-| Option | Jest version | Tests of browser code | Tests of Node.js code |
+| Option | Requirements | Tests of browser code | Tests of Node.js code |
 |---|---|---|---|
-| Map to the browser bundle | 29 and 30 | Yes | No |
-| Enable ES module support | 30 | Yes | Yes |
-| Transform with Babel | 29 and 30 | Yes | Yes |
+| Map to the browser bundle | Jest 29 or 30 | Yes | No |
+| Enable ES module support | Jest 30.4+ on Node.js 24.9+ | Yes | Yes |
+| Transform with Babel | Jest 29 or 30, a Babel config with `@babel/preset-env` | Yes | Yes |
 
 If one Jest config runs tests of both browser and Node.js code, choose an option that supports both. If you use this package to export DevExtreme components, your tests run browser code: DevExtreme uses only the browser bundle.
 
@@ -82,7 +82,7 @@ module.exports = {
 
 The mapping applies to all tests that use this config, and the bundle doesn't include Node.js-only features, such as `readFile()`, `writeFile()` and `ModelContainer`. Don't use it for tests of Node.js code.
 
-**Enable ES module support** (Jest 30). Run Jest with the `--experimental-vm-modules` Node.js option wherever you run it, for example, in npm scripts, CI and your IDE. Node.js prints an `ExperimentalWarning` for this option.
+**Enable ES module support** (Jest 30.4+ on Node.js 24.9+). Run Jest with the `--experimental-vm-modules` Node.js option wherever you run it, for example, in npm scripts, CI and your IDE. Node.js prints an `ExperimentalWarning` for this option. With earlier Jest or Node.js versions, `worksheet.protect()` still fails.
 
 ```sh
 NODE_OPTIONS=--experimental-vm-modules npx jest
