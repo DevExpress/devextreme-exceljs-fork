@@ -1,11 +1,16 @@
 'use strict';
 
-const {test, expect} = require('@playwright/test');
+const {test: base, expect} = require('@playwright/test');
 const crypto = require('crypto');
+const fs = require('fs');
 const path = require('path');
 const {pathToFileURL} = require('url');
 
+// The bundle under test, set per project in playwright.config.js
+const test = base.extend({bundle: ['dx-exceljs-fork.js', {option: true}]});
+
 const testPageURL = pathToFileURL(path.resolve(__dirname, 'exceljs.spec.html')).href;
+const bundlePath = bundle => path.resolve(__dirname, '../../dist', bundle);
 
 // Reference hash from node:crypto to check the bundle's result
 function excelPasswordHash(password, saltValue, spinCount) {
@@ -20,9 +25,9 @@ function excelPasswordHash(password, saltValue, spinCount) {
 }
 
 test.describe('ExcelJS Browser', () => {
-  test.beforeEach(async ({page}) => {
+  test.beforeEach(async ({page, bundle}) => {
     await page.goto(testPageURL);
-    await page.waitForFunction(() => typeof window.ExcelJS !== 'undefined');
+    await page.addScriptTag({path: bundlePath(bundle)});
   });
 
   test('should read and write xlsx via binary buffer', async ({page}) => {
@@ -154,6 +159,73 @@ test.describe('ExcelJS Browser', () => {
       expect(result.type).toBe('iconSet');
       expect(result.iconSet).toBe('3Triangles');
       expect(result.x14Id).toMatch(/^\{[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}\}$/);
+    });
+  });
+});
+
+// Each branch of the UMD wrapper. Bundlers and DevExtreme's test runner use CommonJS, <script> tags the global.
+test.describe('ExcelJS Browser UMD', () => {
+  [
+    {
+      loader: 'global',
+      load: async (page, file) => {
+        await page.addScriptTag({path: file});
+        await page.evaluate(() => {
+          window.loaded = window.ExcelJS;
+        });
+      },
+      exceljsGlobal: 'object',
+    },
+    {
+      // As DevExtreme's test runner loads it: an ES module (strict mode) that declares `module` and `exports`
+      loader: 'CommonJS',
+      load: async (page, file) => {
+        const source = await fs.promises.readFile(file, 'utf8');
+        await page.addScriptTag({
+          type: 'module',
+          content: `const module = {exports: {}}; const exports = module.exports; var define;\n${source}\nwindow.loaded = module.exports;`,
+        });
+      },
+      exceljsGlobal: 'undefined',
+    },
+    {
+      loader: 'AMD',
+      load: async (page, file) => {
+        await page.evaluate(() => {
+          window.define = (deps, factory) => {
+            window.loaded = factory();
+          };
+          window.define.amd = {};
+        });
+        await page.addScriptTag({path: file});
+      },
+      exceljsGlobal: 'undefined',
+    },
+  ].forEach(({loader, load, exceljsGlobal}) => {
+    test(`should load through ${loader}`, async ({page, bundle}) => {
+      await page.goto(testPageURL);
+      await page.evaluate(() => window.addEventListener('error', event => {
+        window.loadError = event.message;
+      }));
+      await load(page, bundlePath(bundle));
+      // Module scripts run asynchronously
+      await page.waitForFunction(() => window.loaded || window.loadError);
+      expect(await page.evaluate(() => window.loadError)).toBeUndefined();
+
+      const result = await page.evaluate(async () => {
+        const wb = new window.loaded.Workbook();
+        wb.addWorksheet('blort').getCell('A1').value = 7;
+
+        const wb2 = new window.loaded.Workbook();
+        await wb2.xlsx.load(await wb.xlsx.writeBuffer());
+
+        return {
+          a1: wb2.getWorksheet('blort').getCell('A1').value,
+          globals: [typeof window.ExcelJS, typeof window.__dxExcelJS],
+        };
+      });
+
+      expect(result).toEqual({a1: 7, globals: [exceljsGlobal, 'undefined']});
     });
   });
 });

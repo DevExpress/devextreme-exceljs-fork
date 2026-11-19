@@ -174,23 +174,17 @@ const ExcelJS = require('devextreme-exceljs-fork');
 ```
 
 在 Node.js 中，这会加载 `lib/` 中的 CommonJS 源代码，需要 Node.js 22.21.1 或更高版本。
-浏览器使用 `dist/` 中的包（参见[浏览器端](#浏览器端)）。
+浏览器使用 `dist/` 中的包，需要支持 ES2020（参见[浏览器端](#浏览器端)）。
 
 ## 浏览器端[⬆](#目录)<!-- Link generated with jump2header -->
 
-ExcelJS 在 *dist/* 文件夹内发布了两个支持浏览器的包：
+*dist/* 文件夹中的包适用于支持 ES2020 的浏览器，例如 Chrome 和 Edge 80+、Firefox 74+ 以及 Safari 14.1+。它们不需要 polyfill：
 
-一个是隐式依赖 `core-js` polyfills 的...
 ```html
-<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.26.0/polyfill.js"></script>
-<script src="exceljs.js"></script>
+<script src="dx-exceljs-fork.min.js"></script>
 ```
 
-另一个则没有...
-```html
-<script src="--your-project's-pollyfills-here--"></script>
-<script src="exceljs.bare.js"></script>
-```
+该脚本会添加全局变量 `ExcelJS`。这些包也可以与 CommonJS 和 AMD 加载器一起使用。读取 `package.json` 中 `browser` 字段的打包工具（例如 webpack 和 Vite）会加载 `dx-exceljs-fork.min.js`。`dx-exceljs-fork.js` 是同一个包，未压缩。
 
 
 # 接口[⬆](#目录)<!-- Link generated with jump2header -->
@@ -2197,10 +2191,10 @@ CSV 解析器使用 [fast-csv](https://www.npmjs.com/package/fast-csv) 编写 CS
 
 ## 预捆绑[⬆](#目录)<!-- Link generated with jump2header -->
 
-以下文件已预先捆绑在一起，并包含在 *dist* 文件夹中。
+以下文件已预先捆绑在一起，并包含在 *dist* 文件夹中（参见[浏览器端](#浏览器端)）。
 
-* exceljs.js
-* exceljs.min.js
+* dx-exceljs-fork.js
+* dx-exceljs-fork.min.js
 
 # 值类型[⬆](#目录)<!-- Link generated with jump2header -->
 
@@ -2486,7 +2480,7 @@ ExcelJS.config.setValue('promise', require('bluebird'));
 
 ## Dist 文件夹[⬆](#目录)<!-- Link generated with jump2header -->
 
-在发布此模块之前，先对源代码进行编译和其他处理，然后再将它们放置在 *dist/* 文件夹中。该自述文件标识两个文件-浏览器捆绑和压缩版本。除了在 package.json 中指定为  `"main"` 的文件外，不能保证 *dist/* 文件夹的其他内容。
+在发布此模块之前，`lib/` 中的源代码会被打包到 *dist/* 文件夹中（参见[浏览器端](#浏览器端)）。Node.js 入口（package.json 中的 `"main"`）直接加载 `lib/`。*dist/* 文件夹中的其他内容（例如 source map）不作保证。
 
 
 # 已知的问题[⬆](#目录)<!-- Link generated with jump2header -->

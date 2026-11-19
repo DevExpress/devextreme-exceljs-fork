@@ -180,23 +180,19 @@ const ExcelJS = require('devextreme-exceljs-fork');
 ```
 
 In Node.js, this loads the CommonJS source from `lib/`, which requires Node.js 22.21.1 or later.
-Browsers use the bundles from `dist/` (see [Browserify](#browserify)).
+Browsers use the bundles from `dist/`, which require ES2020 support (see [Browser Bundles](#browser-bundles)).
 
-## Browserify[⬆](#contents)<!-- Link generated with jump2header -->
+<a id="browserify"></a>
 
-ExcelJS publishes two browserified bundles inside the dist/ folder:
+## Browser Bundles[⬆](#contents)<!-- Link generated with jump2header -->
 
-One with implicit dependencies on core-js polyfills...
+The `dist/` folder contains bundles for browsers that support ES2020, for example, Chrome and Edge 80+, Firefox 74+, and Safari 14.1+. They don't need polyfills:
+
 ```html
-<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.26.0/polyfill.js"></script>
-<script src="exceljs.js"></script>
+<script src="dx-exceljs-fork.min.js"></script>
 ```
 
-And one without...
-```html
-<script src="--your-project's-pollyfills-here--"></script>
-<script src="exceljs.bare.js"></script>
-```
+The script adds the `ExcelJS` global. The bundles also work with CommonJS and AMD loaders. Bundlers that read the `browser` field of `package.json`, such as webpack and Vite, load `dx-exceljs-fork.min.js`. `dx-exceljs-fork.js` is the same bundle, not minified.
 
 
 # Interface[⬆](#contents)<!-- Link generated with jump2header -->
@@ -2316,10 +2312,10 @@ For example code using ExcelJS in the browser take a look at the <a href="https:
 
 ## Prebundled[⬆](#contents)<!-- Link generated with jump2header -->
 
-The following files are pre-bundled and included inside the dist folder.
+The following files are pre-bundled and included inside the dist folder (see [Browser Bundles](#browser-bundles)).
 
-* exceljs.js
-* exceljs.min.js
+* dx-exceljs-fork.js
+* dx-exceljs-fork.min.js
 
 # Value Types[⬆](#contents)<!-- Link generated with jump2header -->
 
@@ -2630,11 +2626,10 @@ Please note: I have tested ExcelJS with bluebird specifically (since up until re
 
 ## Dist Folder[⬆](#contents)<!-- Link generated with jump2header -->
 
-Before publishing this module, the source code is transpiled and otherwise processed
-before being placed in a dist/ folder.
-This README identifies two files - a browserified bundle and minified version.
-No other contents of the dist/ folder are guaranteed in any way other than the file
-specified as "main" in the package.json
+Before publishing this module, the source code in `lib/` is bundled into the `dist/` folder
+(see [Browser Bundles](#browser-bundles)).
+The Node.js entry point (`main` in `package.json`) loads `lib/` directly.
+Other contents of the `dist/` folder, such as source maps, aren't guaranteed.
 
 
 # Known Issues[⬆](#contents)<!-- Link generated with jump2header -->
