@@ -35,7 +35,8 @@ const alias = {
   process: 'process/',
   stream: 'stream-browserify',
   string_decoder: 'string_decoder/',
-  util: 'util/',
+  // A stub: only promisify is needed
+  util: './tools/build/shims/util.js',
 };
 
 // Ignores dependencies' own source maps: some point to unpublished .ts files (saxes, @fast-csv).

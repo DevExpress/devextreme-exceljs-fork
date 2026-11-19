@@ -3,9 +3,11 @@
 ### What Changed
 
 - Removed `dist/es5`, the ES5 copy of `lib/` for Node.js versions earlier than 10 and ES5 browsers (see [Replace `dist/es5` Imports](#replace-distes5-imports)). Also removed `index.ts`, which re-exported it. TypeScript types still come from `index.d.ts`.
-- The browser bundles (`dist/dx-exceljs-fork(.min).js`) are now built with esbuild instead of Browserify and Babel. They target ES2020 instead of ES5, so they're smaller: gzipped `dx-exceljs-fork.min.js` is 149 KB instead of 189 KB.
+- The browser bundles (`dist/dx-exceljs-fork(.min).js`) are now built with esbuild instead of Browserify and Babel. They target ES2020 instead of ES5, so they're smaller: gzipped `dx-exceljs-fork.min.js` is 138 KB instead of 189 KB.
 - Removed `dist/dx-exceljs-fork.bare.js` and `dist/dx-exceljs-fork.bare.min.js`. `dx-exceljs-fork(.min).js` no longer includes the core-js and regenerator-runtime polyfills, so it now has the same code and replaces them (see [Replace `.bare` Bundles](#replace-bare-bundles)). It also no longer defines the `regeneratorRuntime` global.
-- Removed `crypto-browserify` and its dependencies (such as `elliptic`, `bn.js` and `pbkdf2`) from the browser bundles (`dist/dx-exceljs-fork(.min).js`).
+- Removed the following Node.js polyfills and their dependencies from the browser bundles (`dist/dx-exceljs-fork(.min).js`):
+    - `crypto-browserify`, with `elliptic`, `bn.js`, `pbkdf2` and others
+    - `util`, with `call-bind`, `get-intrinsic`, `which-typed-array` and others
 - `worksheet.protect()` now calculates the SHA-512 password hash with `@noble/hashes` 2.x (a new dependency) and generates the salt with `crypto.getRandomValues()`. Protected worksheets are unchanged: Excel accepts the same passwords as before.
 - New runtime requirements:
     - `worksheet.protect()` with a password and writing extended conditional formatting rules (see below) require the Web Crypto API (`globalThis.crypto`). Node.js 22+ and all modern browsers include it. Some test environments that emulate a browser don't: for example, jsdom 19 and earlier (Jest 28 and earlier with `testEnvironment: 'jsdom'`).
