@@ -59,7 +59,17 @@ The browser bundles no longer run in Internet Explorer 11 or other browsers with
 
 `worksheet.protect()` hashes the password with `@noble/hashes` 2.x, which is an ES module. Jest loads the package's Node.js entry point and can't `require()` ES modules by default, so tests that call `worksheet.protect()` with a password fail with `Must use import to load ES Module` (Jest 30) or `Jest encountered an unexpected token` (Jest 29). Other features aren't affected.
 
-Map the package to its browser bundle, which bundlers load in your app:
+Choose one of the following options:
+
+| Option | Jest version | Tests of browser code | Tests of Node.js code |
+|---|---|---|---|
+| Map to the browser bundle | 29 and 30 | Yes | No |
+| Enable ES module support | 30 | Yes | Yes |
+| Transform with Babel | 29 and 30 | Yes | Yes |
+
+If one Jest config runs tests of both browser and Node.js code, choose an option that supports both. If you use this package to export DevExtreme components, your tests run browser code: DevExtreme uses only the browser bundle.
+
+**Map to the browser bundle** (Jest 29 and 30). Your tests then load the same bundle that bundlers load in your app. This doesn't require Babel:
 
 ```js
 // jest.config.js
@@ -70,7 +80,22 @@ module.exports = {
 };
 ```
 
-With Jest 30, you can run Jest with ES module support instead: `NODE_OPTIONS=--experimental-vm-modules npx jest`.
+The mapping applies to all tests that use this config, and the bundle doesn't include Node.js-only features, such as `readFile()`, `writeFile()` and `ModelContainer`. Don't use it for tests of Node.js code.
+
+**Enable ES module support** (Jest 30). Run Jest with the `--experimental-vm-modules` Node.js option wherever you run it, for example, in npm scripts, CI and your IDE. Node.js prints an `ExperimentalWarning` for this option.
+
+```sh
+NODE_OPTIONS=--experimental-vm-modules npx jest
+```
+
+**Transform with Babel** (Jest 29 and 30). Let Babel transform `@noble/hashes`. This requires a Babel config with `@babel/preset-env`:
+
+```js
+// jest.config.js
+module.exports = {
+  transformIgnorePatterns: ['/node_modules/(?!(\\.pnpm/[^/]+/node_modules/)?@noble/hashes/)'],
+};
+```
 
 ## v5.0.0
 
