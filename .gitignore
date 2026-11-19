@@ -13,6 +13,7 @@ dist/*
 # Test Output Folder
 out/*
 spec/out/*
+/test-results/
 
 # Tmp folder
 tmp/*
