@@ -1,4 +1,4 @@
-## Unreleased
+## v6.0.0
 
 ### What Changed
 
